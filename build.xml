@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project name="JHexEdit" default="release" basedir=".">
+  <description>A Hex Editor Written in Java</description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+  <property name="dist" location="dist"/>
+  <property name="doc" location="html"/>
+  <!-- Initialize the compile process -->
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build number -->
+    <buildnumber/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+  <!-- Compile the source code -->
+  <target name="compile" depends="init" description="compile the source">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}"/>
+  </target>
+  <!-- Make a release, which is just a jar file, with no date stamp. -->
+  <target name="release" depends="compile" description="generate the release">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}"/>
+    <jar jarfile="${dist}/jhexedit.jar" manifest="./manifest.txt">
+      <!-- Add the build.number file to the jar -->
+      <fileset dir="." includes="build.number"/>
+      <!-- Add the Source Code -->
+      <fileset dir="${src}" includes="**"/>
+      <!-- Add the class files -->
+      <fileset dir="${build}" includes="**"/>
+    </jar>
+  </target>
+  <!-- Create the documentation. -->
+  <target name="doc" depends="release" description="Creates the javadoc, documentation.">
+    <!-- Create the documentation directory -->
+    <mkdir dir="${doc}"/>
+    <!-- Compile the documentation -->
+    <javadoc destdir="${doc}" author="true" version="true" use="true" windowtitle="JHexEdit">
+      <fileset dir="${src}" includes="**"/>
+      <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+    </javadoc>
+  </target>
+  <!-- Clean up the directories -->
+  <target name="clean" description="clean up">
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+    <delete dir="${doc}"/>
+  </target>
+</project>
