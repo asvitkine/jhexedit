@@ -151,6 +151,8 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     private String lastRowText = null;
     private LinkedList listeners;
     private ByteEditor parent;
+    private Color whiteColor = new Color(254, 254, 254);
+    private Color alternateColor = new Color(237, 243, 254);
     
     public LocalTextGridModel(ByteEditor parent) {
       listeners = new LinkedList();
@@ -178,7 +180,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     }
     
     public Color getCharBackground(int row, int col) {
-      return Color.WHITE;
+      return (row % 2 == 0 ? whiteColor : alternateColor);
     }
     
     public int getCharStyle(int row, int col) {
@@ -218,7 +220,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         String tmp = Integer.toString(0xFF & b[i], radix);
         while(tmp.length()<byteWidth)
           tmp = Integer.toString(0, radix) + tmp;
-        result = result + " " + tmp;
+        result = result + (result == "" ? "" : " ") + tmp;
       }
 
       for (; i<bytesPerRow; i++) {
@@ -239,7 +241,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
       long offset = loc.getOffset();
       Point p = new Point();
       p.y = (int) (offset/bytesPerRow);
-      p.x = (int) (offset%bytesPerRow)*(byteWidth+1);
+      p.x = (int) (offset%bytesPerRow)*(byteWidth+1)-1;
       return p;
     }
   }
@@ -249,6 +251,8 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
   private class LocalTextGridCursor extends TextGridCursor {
     private boolean isInserting = false;
     private ByteEditor parent;
+    private Color insertColor = Color.BLACK;
+    private Color replaceColor = Color.BLACK;
 
     public LocalTextGridCursor(ByteEditor parent) {
       this.parent = parent;
@@ -296,29 +300,32 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     }
 
     public boolean isPositionedForInsert() {
-      return getCurrentColumn()%(byteWidth+1) == 0 ||
+      return getCurrentColumn()%(byteWidth+1) == 2 ||
              localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()).getOffset() >= document.length();  
     }
 
     public char [] getByteChars() {
       char [] byteChars = new char[byteWidth];
       int row = getCurrentRow();
-      int col = (getCurrentColumn() / (byteWidth+1)) * (byteWidth+1) + 1;
- 
+      int col = getCurrentColumn() - getCurrentColumn() % (byteWidth+1);
+      TextGridModel model = getTextGrid().getModel();
+
       for (int i=0; i<byteChars.length; i++)
-        byteChars[i] = getTextGrid().getModel().getCharAt(row, col+i);        
-   
+        byteChars[i] = model.getCharAt(row, col+i);        
+
       return byteChars;
     }
 
     public void paint(Graphics g) {
       if (draw) {
-        Rectangle rect = getTextGrid().modelToView(getCurrentRow(),getCurrentColumn());
-        g.setXORMode(Color.BLACK);
-        if (isPositionedForInsert())
-          g.drawLine(rect.x, rect.y, rect.x, rect.y + rect.height - 1);
-        else
+        Rectangle rect = getCaretRect();
+        if (isPositionedForInsert()) {
+          g.setXORMode(insertColor);
+          g.drawLine(rect.x + rect.width - 1, rect.y, rect.x + rect.width - 1, rect.y + rect.height - 1);
+        } else {
+          g.setXORMode(replaceColor);
           g.fillRect(rect.x, rect.y, rect.width, rect.height);
+        }
         g.setPaintMode();
       }
     }
@@ -360,7 +367,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
               }
               // No selection -- Typeover
               else if (!isPositionedForInsert()) {
-                int offset = getCurrentColumn() % (byteWidth+1) - 1;
+                int offset = getCurrentColumn() % (byteWidth+1);
                 int byteValue = 0;
                 char [] byteChars = getByteChars();
                 byteChars[offset] = keyChar;
@@ -386,7 +393,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
                   byteChars[i] = Integer.toString(0, radix).charAt(0);
                 int byteValue = Integer.parseInt(new String(byteChars), radix);
                 if (byteValue >=0 && byteValue <= 0xFF) {
-                  getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
+                  getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()+(byteWidth+1)),byteValue);
                   right();
                   right();
                   isInserting = true;
@@ -401,7 +408,20 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
       }
     }
   }
-  
+
+  protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    Graphics2D g2d = (Graphics2D) g;
+    Rectangle clip = g2d.getClipBounds();
+    g2d.setColor(Color.LIGHT_GRAY);
+    for (int i = 0; i < 3; i++) { 
+      Rectangle r1 = modelToView(0, (i+1)*4*(byteWidth+1));
+      Rectangle r2 = modelToView(0, (i+1)*4*(byteWidth+1)-1);
+      int x = (r1.x+r2.x)/2;
+      g2d.drawLine(x, clip.y, x, clip.y + clip.height);
+    }
+  }
+
   ////////////////////////////////
   // DOCUMENT OBSERVER
   private class LocalDocumentObserver implements Observer {

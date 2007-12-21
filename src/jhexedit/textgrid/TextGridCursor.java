@@ -168,7 +168,7 @@ public class TextGridCursor {
     // Erase the old caret
     if (!isMarkSet()) {
       draw = false;
-      textGrid.repaint(textGrid.modelToView(this.row, this.column));
+      textGrid.repaint(getCaretRect());
     }
     
     // Move the cursor
@@ -176,12 +176,12 @@ public class TextGridCursor {
     this.column = column; 
 
     // Scroll if necessary
-    textGrid.scrollRectToVisible(textGrid.modelToView(row,column));
+    textGrid.scrollRectToVisible(getCaretRect());
 
     // Draw the new caret
     if (!isMarkSet()) {
       draw = true;
-      textGrid.repaint(textGrid.modelToView(row, column));
+      textGrid.repaint(getCaretRect());
     }
     else {
       textGrid.repaint();
@@ -193,6 +193,12 @@ public class TextGridCursor {
     // Notify listeners
     fireTextGridCursorEvent(new TextGridCursorEvent(this, getCurrentRow(), getCurrentColumn(), markedRow, markedColumn, 
                                 TextGridCursorEvent.CURSOR_MOVED));
+  }
+
+  protected Rectangle getCaretRect() {
+    Rectangle r = textGrid.modelToView(this.row, this.column);
+    r.y--;
+    return r;
   }
 
   public void setMark() {
@@ -286,7 +292,7 @@ public class TextGridCursor {
 
   public void paint(Graphics g) {
     if (draw) {
-      Rectangle rect = textGrid.modelToView(getCurrentRow(),getCurrentRow());
+      Rectangle rect = getCaretRect();
       g.setXORMode(Color.BLACK);
       g.fillRect(rect.x, rect.y, rect.width, rect.height);
       g.setPaintMode();
@@ -373,7 +379,7 @@ public class TextGridCursor {
   private class DrawToggle implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       draw = !draw;
-      textGrid.repaint(textGrid.modelToView(getCurrentRow(),getCurrentColumn()));
+      textGrid.repaint(getCaretRect());
     }
   }
 

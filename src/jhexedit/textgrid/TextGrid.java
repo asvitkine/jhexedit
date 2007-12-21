@@ -50,10 +50,10 @@ import java.util.Iterator;
 public class TextGrid extends JComponent implements TextGridModelListener, Scrollable {
 
   // CONSTANTS
-  public static final Font PLAIN_FONT       = new Font("Monospaced", Font.PLAIN,  12);
-  public static final Font BOLD_FONT        = new Font("Monospaced", Font.BOLD,   12);
-  public static final Font ITALIC_FONT      = new Font("Monospaced", Font.ITALIC, 12);
-  public static final Font BOLD_ITALIC_FONT = new Font("Monospaced", Font.BOLD|Font.ITALIC, 12);
+  public static final Font PLAIN_FONT       = new Font("Monospaced", Font.PLAIN,  11);
+  public static final Font BOLD_FONT        = new Font("Monospaced", Font.BOLD,   11);
+  public static final Font ITALIC_FONT      = new Font("Monospaced", Font.ITALIC, 11);
+  public static final Font BOLD_ITALIC_FONT = new Font("Monospaced", Font.BOLD|Font.ITALIC, 11);
   
   public static final int PLAIN                = 0;
   public static final int BOLD                 = 1;
