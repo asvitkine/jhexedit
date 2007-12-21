@@ -250,6 +250,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
   // GRID CURSOR
   private class LocalTextGridCursor extends TextGridCursor {
     private boolean isInserting = false;
+    private boolean insertingAtLineStart = false;
     private ByteEditor parent;
     private Color insertColor = Color.BLACK;
     private Color replaceColor = Color.BLACK;
@@ -261,7 +262,8 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     public void moveTo(int row, int column) {
       super.moveTo(row,column);    
       isInserting = false;
-      
+      insertingAtLineStart = false;
+
       Location cLoc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn());
       
       if (isMarkSet()) {
@@ -300,7 +302,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     }
 
     public boolean isPositionedForInsert() {
-      return getCurrentColumn()%(byteWidth+1) == 2 ||
+      return getCurrentColumn()%(byteWidth+1) == 2 || insertingAtLineStart ||
              localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()).getOffset() >= document.length();  
     }
 
@@ -321,12 +323,24 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         Rectangle rect = getCaretRect();
         if (isPositionedForInsert()) {
           g.setXORMode(insertColor);
-          g.drawLine(rect.x + rect.width - 1, rect.y, rect.x + rect.width - 1, rect.y + rect.height - 1);
+          if (insertingAtLineStart)
+            g.drawLine(rect.x, rect.y, rect.x, rect.y + rect.height - 1);
+          else
+            g.drawLine(rect.x + rect.width - 1, rect.y, rect.x + rect.width - 1, rect.y + rect.height - 1);
         } else {
           g.setXORMode(replaceColor);
           g.fillRect(rect.x, rect.y, rect.width, rect.height);
         }
         g.setPaintMode();
+      }
+    }
+
+    protected void processComponentMouseEvent(MouseEvent e) {
+      super.processComponentMouseEvent(e);
+      if (e.getID() == MouseEvent.MOUSE_PRESSED) {
+        if (e.getPoint().x <= parent.leftMargin) {
+          insertingAtLineStart = true;
+        }
       }
     }
 
@@ -377,6 +391,8 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
                   if (isInserting) {
                     right();
                     isInserting = true;
+                    if (getCurrentColumn() == 0)
+                      insertingAtLineStart = true;
                   }
                   else {
                     right();
@@ -393,8 +409,10 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
                   byteChars[i] = Integer.toString(0, radix).charAt(0);
                 int byteValue = Integer.parseInt(new String(byteChars), radix);
                 if (byteValue >=0 && byteValue <= 0xFF) {
-                  getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()+(byteWidth+1)),byteValue);
-                  right();
+                  int col = (insertingAtLineStart ? getCurrentColumn() : getCurrentColumn()+(byteWidth+1));
+                  getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),col),byteValue);
+                  if (!insertingAtLineStart)
+                    right();
                   right();
                   isInserting = true;
                 }
