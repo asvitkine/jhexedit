@@ -49,12 +49,12 @@ import jhexedit.textgrid.*;
 public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
         
   // CONSTANTS
-  public static final int SPACER_WIDTH = 30;
+  public static final int SPACER_WIDTH = 8;
 
   // MEMBERS
   protected TextGrid   addressComponent;
   protected ByteEditor hexEditor;
-  protected ByteEditor asciiEditor;
+  protected CharEditor asciiEditor;
   
   private HexEditorListener hexEditorListener;
   private ASCIIEditorListener asciiEditorListener;
@@ -74,8 +74,8 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     setLayout( gridbag );
 
     hexEditor     = new ByteEditor(document);
-    asciiEditor   = new ByteEditor(document);
-   addressComponent = new TextGrid(new AddressTextGridModel());
+    asciiEditor   = new CharEditor(document);
+    addressComponent = new TextGrid(new AddressTextGridModel());
     
     hexEditorListener = new HexEditorListener();
     asciiEditorListener = new ASCIIEditorListener();

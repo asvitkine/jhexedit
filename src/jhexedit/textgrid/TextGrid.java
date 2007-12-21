@@ -108,14 +108,22 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
     if (model != null)
       model.addTextGridModelListener(this);
     
+    /*
     Dimension d = new Dimension( leftMargin + model.getColumnCount()*charWidth,
                                  topMargin + model.getRowCount()*charHeight);
 
     setPreferredSize(d);
     setMinimumSize(d);
-    
+    */
+
     revalidate();
     repaint();
+  }
+
+  // model can change its column count, so this is now dynamic
+  public Dimension getPreferredSize() {
+    return new Dimension(leftMargin + model.getColumnCount()*charWidth,
+                         topMargin + model.getRowCount()*charHeight);
   }
   
   // CURSOR STUFF
