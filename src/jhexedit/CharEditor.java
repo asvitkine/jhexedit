@@ -308,6 +308,16 @@ public class CharEditor extends TextGrid implements BinaryEditor {
           case KeyEvent.VK_DELETE:
             break;
           case KeyEvent.VK_BACK_SPACE:
+            // FIXME: don't do this if there's a selection
+            if (getCurrentColumn() > 0) {
+              Location loc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()-1);
+              getDocument().delete(loc, 1);
+              left();
+            } else if (getCurrentRow() > 0) {
+              Location loc = localTextGridModel.gridToLocation(getCurrentRow()-1,getColumnCount()-1);
+              getDocument().delete(loc, 1);
+              left();
+            }
             break;
           
           // User types a character
