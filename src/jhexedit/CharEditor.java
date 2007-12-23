@@ -298,7 +298,6 @@ public class CharEditor extends TextGrid implements BinaryEditor {
       }
     }
 
-/*
     protected void processComponentKeyEvent(KeyEvent e) {
       super.processComponentKeyEvent(e);
       
@@ -319,6 +318,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
               // There is a selection
               if (selection != null && 
                   selection.contains(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()))) {
+                  /*
                 char [] byteChars = new char[byteWidth];
                 byteChars[0] = keyChar;
                 for (int i=1; i<byteWidth; i++)
@@ -332,15 +332,11 @@ public class CharEditor extends TextGrid implements BinaryEditor {
                   right();
                   clearMark();
                   setSelectionSpan(null);
-                }
+                } */
               }
               // No selection - Insert
-              else {
-                char [] byteChars = new char[byteWidth];
-                byteChars[0] = keyChar;
-                for (int i=1; i<byteWidth; i++)
-                  byteChars[i] = Integer.toString(0, radix).charAt(0);
-                int byteValue = Integer.parseInt(new String(byteChars), radix);
+              else if (keyChar != KeyEvent.CHAR_UNDEFINED) {
+                int byteValue = (byte) keyChar;
                 if (byteValue >=0 && byteValue <= 0xFF) {
                   getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
                   right();
@@ -354,7 +350,6 @@ public class CharEditor extends TextGrid implements BinaryEditor {
         }
       }
     }
-*/
   }
 
   ////////////////////////////////
