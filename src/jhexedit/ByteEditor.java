@@ -260,9 +260,32 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     }
     
     public void moveTo(int row, int column) {
+      boolean insertingAtLineStart = false;
+      try {
+        int charsPerRow = bytesPerRow*(byteWidth+1)-1;
+        int realColumn = column;
+        int realRow = row;
+        if (realColumn >= charsPerRow) {
+          realColumn = realColumn%charsPerRow;
+          realRow += column/charsPerRow;
+        } else while (realColumn < 0) {
+          realColumn += charsPerRow;
+          realRow--;
+        }
+        byte [] b = new byte[bytesPerRow];
+        int bytesRead = document.read(document.createOffset(realRow*bytesPerRow), b);
+        if (bytesRead == -1) {
+          column = 0;
+          row = realRow;
+          insertingAtLineStart = true;
+        } else if (bytesRead*(byteWidth+1)-1 <= realColumn) {
+          column = bytesRead*(byteWidth+1)-1;
+          row = realRow;
+        }
+      } catch (Exception ignore) {}
+
       super.moveTo(row,column);    
-      isInserting = false;
-      insertingAtLineStart = false;
+      this.isInserting = this.insertingAtLineStart = insertingAtLineStart;
 
       Location cLoc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn());
       
