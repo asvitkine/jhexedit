@@ -250,6 +250,29 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     }
 
     public void moveTo(int row, int column) {
+      try {
+        // this block restricts the cursor to
+        // parts where there are actual bytes
+        int realColumn = column;
+        int realRow = row;
+        if (realColumn >= bytesPerRow) {
+          realColumn = realColumn%bytesPerRow;
+          realRow += column/bytesPerRow;
+        } else while (realColumn < 0) {
+          realColumn += bytesPerRow;
+          realRow--;
+        }
+        byte [] b = new byte[bytesPerRow];
+        int bytesRead = document.read(document.createOffset(realRow*bytesPerRow), b);
+        if (bytesRead == -1) {
+          column = 0;
+          row = realRow;
+        } else if (bytesRead <= realColumn) {
+          column = bytesRead;
+          row = realRow;
+        }
+      } catch (Exception ignore) {}
+
       super.moveTo(row,column);    
 
       Location cLoc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn());
