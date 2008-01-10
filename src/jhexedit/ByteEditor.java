@@ -418,14 +418,15 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         switch(e.getKeyCode()) {
           case KeyEvent.VK_BACK_SPACE:
             if (selection != null && selection.length() > 0) {
-                moveTo(selection.getStartLocation());
-                getDocument().delete(selection.getStartLocation(), (int) selection.length());
-                clearMark();
-                setSelectionSpan(null);
-                left();
-                isInserting = true;
-                if (getCurrentColumn() == 0)
-                  insertingAtLineStart = true;
+              moveTo(selection.getEndLocation().addOffset(-selection.length()));
+              getDocument().delete(selection.getStartLocation(), (int) selection.length());
+              clearMark();
+              setSelectionSpan(null);
+              right();
+              right();
+              isInserting = true;
+              if (getCurrentColumn() == 0)
+                insertingAtLineStart = true;
             } else if (isPositionedForInsert()) {
               if (getCurrentColumn() > 0) {
                 Location loc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()-1);
