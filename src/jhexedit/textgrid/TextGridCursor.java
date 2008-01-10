@@ -136,6 +136,8 @@ public class TextGridCursor {
   }
   
   public void left() {
+    if (getCurrentRow() == 0 && getCurrentColumn() == 0)
+      return;
     moveTo(getCurrentRow(), getCurrentColumn() - 1);
   }
   
@@ -152,7 +154,7 @@ public class TextGridCursor {
   }
 
   public void moveTo(int row, int column) {
-          
+
     if (column >= textGrid.getColumnCount()) {
       column = 0;
       row ++;

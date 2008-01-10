@@ -138,7 +138,11 @@ public class CharEditor extends TextGrid implements BinaryEditor {
       l.editorUpdated(e);
     }
   }
-  
+
+  protected boolean shouldDrawCursor() {
+    return super.shouldDrawCursor() && (selection == null || selection.length()==0);
+  }
+
   ////////////////////////////////
   // GRID MODEL
   private class LocalTextGridModel implements TextGridModel {
@@ -165,7 +169,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     public char getCharAt(int row, int col) {
       if (lastRowText == null || lastRowIndex != row ) {
         lastRowIndex = row;
-        lastRowText  = getRowText(row);
+        lastRowText = getRowText(row);
       }
       return lastRowText.charAt(col);
     }
@@ -301,15 +305,12 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     }
     
     public boolean isSelected(int row, int column) {
-       ByteSpan span = getSelectionSpan();
-       if (span != null) {
-         Point p = localTextGridModel.locationToGrid(span.getStartLocation());
-         if (p.x == column && p.y == row)
-           return false;
-         else       
-           return span.contains(localTextGridModel.gridToLocation(row,column));
-       }
-       return false;
+      ByteSpan span = getSelectionSpan();
+      if (span != null) {
+        Point p = localTextGridModel.locationToGrid(span.getStartLocation());   
+        return span.contains(localTextGridModel.gridToLocation(row,column));
+      }
+      return false;
     }
 
     public void paint(Graphics g) {
@@ -329,8 +330,12 @@ public class CharEditor extends TextGrid implements BinaryEditor {
       if (e.getID() == KeyEvent.KEY_PRESSED) {
         switch(e.getKeyCode()) {
           case KeyEvent.VK_BACK_SPACE:
-            // FIXME: don't do this if there's a selection
-            if (getCurrentColumn() > 0) {
+            if (selection != null && selection.length() > 0) {
+              moveTo(selection.getEndLocation().addOffset(-selection.length()));
+              getDocument().delete(selection.getStartLocation(), (int) selection.length());
+              clearMark();
+              setSelectionSpan(null);
+            } else if (getCurrentColumn() > 0) {
               Location loc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()-1);
               getDocument().delete(loc, 1);
               left();

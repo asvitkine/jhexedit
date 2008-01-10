@@ -143,7 +143,11 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
       l.editorUpdated(e);
     }
   }
-  
+
+  protected boolean shouldDrawCursor() {
+    return super.shouldDrawCursor() && (selection == null || selection.length()==0);
+  }
+
   ////////////////////////////////
   // GRID MODEL
   private class LocalTextGridModel implements TextGridModel {
@@ -258,7 +262,45 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     public LocalTextGridCursor(ByteEditor parent) {
       this.parent = parent;
     }
+
+    public void left() {
+      if (getCurrentColumn() == 0 && !insertingAtLineStart) {
+        isInserting = true;
+        insertingAtLineStart = true;
+      } else {
+        super.left();
+      }
+    }
     
+    public void right() {
+      if (getCurrentColumn() == getColumnCount() - 1) {
+        super.right();
+        isInserting = insertingAtLineStart = true;
+      } else if (insertingAtLineStart) {
+        isInserting = insertingAtLineStart = false;        
+      } else {
+        super.right();
+      }
+    }
+    
+    public void up() {
+      if (insertingAtLineStart) {
+        super.up();
+        isInserting = insertingAtLineStart = true;
+      } else {
+        super.up();
+      }
+    }
+    
+    public void down() {
+      if (insertingAtLineStart) {
+        super.down();
+        isInserting = insertingAtLineStart = true;
+      } else {
+        super.down();
+      }
+    }
+
     public void moveTo(int row, int column) {
       boolean insertingAtLineStart = false;
       try {
@@ -284,7 +326,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         }
       } catch (Exception ignore) {}
 
-      super.moveTo(row,column);    
+      super.moveTo(row,column);
       this.isInserting = this.insertingAtLineStart = insertingAtLineStart;
 
       Location cLoc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn());
@@ -374,11 +416,40 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
       
       if (e.getID() == KeyEvent.KEY_PRESSED) {
         switch(e.getKeyCode()) {
+          case KeyEvent.VK_BACK_SPACE:
+            if (selection != null && selection.length() > 0) {
+                moveTo(selection.getStartLocation());
+                getDocument().delete(selection.getStartLocation(), (int) selection.length());
+                clearMark();
+                setSelectionSpan(null);
+                left();
+                isInserting = true;
+                if (getCurrentColumn() == 0)
+                  insertingAtLineStart = true;
+            } else if (isPositionedForInsert()) {
+              if (getCurrentColumn() > 0) {
+                Location loc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()-1);
+                getDocument().delete(loc, 1);
+                left();
+                left();
+                if (getCurrentColumn() == 0)
+                  insertingAtLineStart = true;
+                else
+                  left();
+                isInserting = true;
+              } else if (getCurrentRow() > 0) {
+                Location loc = localTextGridModel.gridToLocation(getCurrentRow()-1,getColumnCount()-1);
+                getDocument().delete(loc, 1);
+                left();
+                left();
+                left();
+              }
+            }
+            break;
+
           case KeyEvent.VK_DELETE:
             break;
-          case KeyEvent.VK_BACK_SPACE:
-            break;
-          
+         
           // User types a character
           default:
             char keyChar = e.getKeyChar();
@@ -396,7 +467,6 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
                   moveTo(selection.getStartLocation());
                   getDocument().delete(selection.getStartLocation(), (int) selection.length());
                   getDocument().insert(selection.getStartLocation(), byteValue);
-                  right();
                   right();
                   clearMark();
                   setSelectionSpan(null);

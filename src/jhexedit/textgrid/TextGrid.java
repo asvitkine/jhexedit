@@ -403,8 +403,12 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
     }
     
     // Draw the caret
-    if (hasFocus() && cursor != null)
+    if (cursor != null && shouldDrawCursor())
       cursor.paint(g2d);
+  }
+
+  protected boolean shouldDrawCursor() {
+    return hasFocus();
   }
 
   //////////////////////////
