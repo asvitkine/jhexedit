@@ -465,7 +465,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
                    byteChars[i] = Integer.toString(0, radix).charAt(0);
                 int byteValue = Integer.parseInt(new String(byteChars), radix);
                 if (byteValue >=0 && byteValue <= 0xFF) {
-                  moveTo(selection.getStartLocation());
+                  moveTo(selection.getEndLocation().addOffset(-selection.length() + 1));
                   getDocument().delete(selection.getStartLocation(), (int) selection.length());
                   getDocument().insert(selection.getStartLocation(), byteValue);
                   right();
@@ -490,8 +490,16 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
                   }
                   else {
                     right();
-                    if (isPositionedForInsert())
-                      right();
+                    if (isPositionedForInsert()) {
+                      if (getCurrentColumn() == 0 && getCurrentRow() == getRowCount() - 1) {
+                        byte [] b = new byte[bytesPerRow];
+                        int bytesRead = document.read(document.createOffset(getCurrentRow()*bytesPerRow), b);
+                        if (bytesRead > 0)
+                          right();
+                      } else {
+                        right();
+                      }
+                    }
                   }
                 }
               }
