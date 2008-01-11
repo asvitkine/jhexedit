@@ -376,10 +376,10 @@ public class CharEditor extends TextGrid implements BinaryEditor {
                 } */
               }
               // No selection - Insert
-              else if (keyChar != KeyEvent.CHAR_UNDEFINED) {
+              else if (keyChar != KeyEvent.CHAR_UNDEFINED && keyChar != KeyEvent.VK_ESCAPE && keyChar != KeyEvent.VK_ENTER) {
                 int byteValue = (byte) keyChar;
                 // ignore the ESCAPE key
-                if (byteValue >=0 && byteValue <= 0xFF && byteValue != 27) {
+                if (byteValue >=0 && byteValue <= 0xFF) {
                   getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
                   right();
                 }
