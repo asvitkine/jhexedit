@@ -287,8 +287,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
           setSelectionSpan(new ByteSpan(mLoc,cLoc));
         else
           setSelectionSpan(new ByteSpan(cLoc,mLoc));
-      }
-      else {
+      } else {
         setSelectionSpan(null);
       }
 

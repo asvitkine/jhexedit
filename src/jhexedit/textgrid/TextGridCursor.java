@@ -329,26 +329,36 @@ public class TextGridCursor {
 
   protected void processComponentKeyEvent(KeyEvent e) {
     if (e.getID() == KeyEvent.KEY_PRESSED) {
+      boolean selected, selecting;
       switch(e.getKeyCode()) {
-        case KeyEvent.VK_LEFT:
-          
+        case KeyEvent.VK_LEFT:        
+
+          left();
+
           if (e.isShiftDown() || e.isControlDown()) {
             if (!isMarkSet()) setMark();
           }
           else
             clearMark();
-          
-          left();
+
+          moveTo(getCurrentRow(), getCurrentColumn());
           e.consume();
           break;
         case KeyEvent.VK_RIGHT:
+          selected = isSelected(getCurrentRow(), getCurrentColumn());
+          selecting = false;
           if (e.isShiftDown() || e.isControlDown()) {
             if (!isMarkSet()) setMark();
+            selecting = true;
           }
           else
             clearMark();
           
-          right();
+          if (selected || !selecting)
+            right();
+          else
+            moveTo(getCurrentRow(), getCurrentColumn());
+
           e.consume();
           break;
         case KeyEvent.VK_UP:
