@@ -266,6 +266,8 @@ public class CharEditor extends TextGrid implements BinaryEditor {
           realColumn += bytesPerRow;
           realRow--;
         }
+        if (realRow == getRowCount())
+          return;
         byte [] b = new byte[bytesPerRow];
         int bytesRead = document.read(document.createOffset(realRow*bytesPerRow), b);
         if (bytesRead == -1) {
