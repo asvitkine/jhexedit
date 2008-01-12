@@ -275,7 +275,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
           row = realRow;
         } else if (bytesRead <= realColumn) {
           column = bytesRead;
-          row = realRow;
+          row = realRow;       
         }
       } catch (Exception ignore) {}
 
@@ -283,15 +283,23 @@ public class CharEditor extends TextGrid implements BinaryEditor {
 
       Location cLoc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn());
       
+      ByteSpan span = null;
       if (isMarkSet()) {
         Location mLoc = localTextGridModel.gridToLocation(getMarkedRow(),getMarkedColumn());
-        if (mLoc.compareTo(cLoc) <= 0)
-          setSelectionSpan(new ByteSpan(mLoc,cLoc));
-        else
-          setSelectionSpan(new ByteSpan(cLoc,mLoc));
-      } else {
-        setSelectionSpan(null);
+        Location start, end;
+        if (mLoc.compareTo(cLoc) <= 0) {
+          start = mLoc;
+          end = cLoc;
+        } else {
+          start = cLoc;
+          end = mLoc;
+        }
+        byte [] b = new byte[1];
+        while (document.read(end, b) < 0)
+          end = end.addOffset(-1);
+        span = new ByteSpan(start, end);
       }
+      setSelectionSpan(span);
 
       fireBinaryEditorEvent( new BinaryEditorEvent(parent, document, cLoc, getSelectionSpan(), null,
                                                    BinaryEditorEvent.LOCATION_CHANGED) );        
@@ -385,6 +393,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
                   getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
                   right();
                 }
+                setSelectionSpan(null);
               }
             }
             catch(NumberFormatException exception) {
