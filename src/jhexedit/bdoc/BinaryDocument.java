@@ -403,10 +403,10 @@ public class BinaryDocument extends Observable {
 
     if (spaceRemaining < len)
       expandBuffer( len - spaceRemaining );
-    occupied += len;
 
     for (int i=(int) length()-1; i>=(int) offset; i--)
       data[i+len] = data[i];
+    occupied += len;
 
     for (int i=0; i<len; i++)
       data[(int) offset + i] = b[off + i];
