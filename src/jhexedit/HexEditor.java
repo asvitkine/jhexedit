@@ -126,7 +126,13 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     gridbag.setConstraints(asciiEditor,gbc);
     add(asciiEditor);
   }
-        
+
+  public void setEnabled(boolean enabled) {
+    hexEditor.setEnabled(enabled);
+    asciiEditor.setEnabled(enabled);
+    super.setEnabled(enabled);
+  }
+
   public AnnotatedBinaryDocument getDocument() {
     return hexEditor.getDocument();
   }
