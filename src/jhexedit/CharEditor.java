@@ -70,8 +70,8 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     super(new TestTextGridModel());
     listeners = new LinkedList();
     
-    localTextGridModel = new LocalTextGridModel(this);
-    localTextGridCursor = new LocalTextGridCursor(this);
+    localTextGridModel = new LocalTextGridModel();
+    localTextGridCursor = new LocalTextGridCursor();
     localDocumentObserver = new LocalDocumentObserver();
 
     setDocument(document);
@@ -149,13 +149,11 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     private int lastRowIndex = 0;
     private String lastRowText = null;
     private LinkedList listeners;
-    private CharEditor parent;
     private Color whiteColor = new Color(254, 254, 254);
     private Color alternateColor = new Color(237, 243, 254);
     
-    public LocalTextGridModel(CharEditor parent) {
+    public LocalTextGridModel() {
       listeners = new LinkedList();
-      this.parent = parent;
     }
     
     public int getColumnCount() {
@@ -175,7 +173,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     }
     
     public Color getCharColor(int row, int col) {
-      return Color.BLACK;
+      return (isEnabled() ? Color.WHITE : Color.DARK_GRAY);
     }
     
     public Color getCharBackground(int row, int col) {
@@ -246,12 +244,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
   ////////////////////////////////
   // GRID CURSOR
   private class LocalTextGridCursor extends TextGridCursor {
-    private CharEditor parent;
     private Color insertColor = Color.BLACK;
-
-    public LocalTextGridCursor(CharEditor parent) {
-      this.parent = parent;
-    }
 
     public void moveTo(int row, int column) {
       try {
@@ -301,7 +294,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
       }
       setSelectionSpan(span);
 
-      fireBinaryEditorEvent( new BinaryEditorEvent(parent, document, cLoc, getSelectionSpan(), null,
+      fireBinaryEditorEvent( new BinaryEditorEvent(CharEditor.this, document, cLoc, getSelectionSpan(), null,
                                                    BinaryEditorEvent.LOCATION_CHANGED) );        
     }
 

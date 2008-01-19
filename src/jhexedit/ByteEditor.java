@@ -72,8 +72,8 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     super(new TestTextGridModel());
     listeners = new LinkedList();
     
-    localTextGridModel = new LocalTextGridModel(this);
-    localTextGridCursor = new LocalTextGridCursor(this);
+    localTextGridModel = new LocalTextGridModel();
+    localTextGridCursor = new LocalTextGridCursor();
     localDocumentObserver = new LocalDocumentObserver();
 
     setDocument(document);
@@ -154,13 +154,11 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     private int lastRowIndex = 0;
     private String lastRowText = null;
     private LinkedList listeners;
-    private ByteEditor parent;
     private Color whiteColor = new Color(254, 254, 254);
     private Color alternateColor = new Color(237, 243, 254);
     
-    public LocalTextGridModel(ByteEditor parent) {
+    public LocalTextGridModel() {
       listeners = new LinkedList();
-      this.parent = parent;
     }
     
     public int getColumnCount() {
@@ -180,7 +178,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     }
     
     public Color getCharColor(int row, int col) {
-      return Color.BLACK;
+      return (isEnabled() ? Color.WHITE : Color.DARK_GRAY);
     }
     
     public Color getCharBackground(int row, int col) {
@@ -255,13 +253,8 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
   private class LocalTextGridCursor extends TextGridCursor {
     private boolean isInserting = false;
     private boolean insertingAtLineStart = false;
-    private ByteEditor parent;
     private Color insertColor = Color.BLACK;
     private Color replaceColor = Color.BLACK;
-
-    public LocalTextGridCursor(ByteEditor parent) {
-      this.parent = parent;
-    }
 
     public void left() {
       if (getCurrentColumn() == 0 && !insertingAtLineStart) {
@@ -342,7 +335,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         setSelectionSpan(null);
       }
 
-      fireBinaryEditorEvent( new BinaryEditorEvent(parent, document, cLoc, getSelectionSpan(), null,
+      fireBinaryEditorEvent( new BinaryEditorEvent(ByteEditor.this, document, cLoc, getSelectionSpan(), null,
                                                    BinaryEditorEvent.LOCATION_CHANGED) );        
     }
 
@@ -403,7 +396,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     protected void processComponentMouseEvent(MouseEvent e) {
       super.processComponentMouseEvent(e);
       if (e.getID() == MouseEvent.MOUSE_PRESSED) {
-        if (e.getPoint().x <= parent.leftMargin) {
+        if (e.getPoint().x <= leftMargin) {
           insertingAtLineStart = true;
         }
       }

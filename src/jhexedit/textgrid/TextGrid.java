@@ -408,7 +408,7 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
   }
 
   protected boolean shouldDrawCursor() {
-    return hasFocus();
+    return hasFocus() && isEnabled();
   }
 
   //////////////////////////
