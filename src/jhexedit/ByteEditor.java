@@ -178,7 +178,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     }
     
     public Color getCharColor(int row, int col) {
-      return (isEnabled() ? Color.WHITE : Color.DARK_GRAY);
+      return (isEnabled() ? Color.BLACK : Color.DARK_GRAY);
     }
     
     public Color getCharBackground(int row, int col) {
