@@ -6,6 +6,12 @@
   <property name="build" location="build"/>
   <property name="dist" location="dist"/>
   <property name="doc" location="html"/>
+  <property name="lib" location="lib"/>
+
+  <path id="classpath">
+    <fileset dir="${lib}" includes="**/*.jar"/>
+  </path>
+
   <!-- Initialize the compile process -->
   <target name="init">
     <!-- Create the time stamp -->
@@ -18,7 +24,7 @@
   <!-- Compile the source code -->
   <target name="compile" depends="init" description="compile the source">
     <!-- Compile the java code from ${src} into ${build} -->
-    <javac srcdir="${src}" destdir="${build}"/>
+    <javac srcdir="${src}" destdir="${build}" classpathref="classpath"/>
   </target>
   <!-- Make a release, which is just a jar file, with no date stamp. -->
   <target name="release" depends="compile" description="generate the release">
@@ -49,5 +55,18 @@
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
     <delete dir="${doc}"/>
+  </target>
+  <!-- Run unit tests -->
+  <target name="test" depends="compile">
+    <junit printsummary="yes">
+      <classpath>
+        <path refid="classpath"/>
+        <pathelement path="${build}"/>
+      </classpath>
+      <formatter type="brief" usefile="false" />
+      <batchtest fork="yes">
+        <fileset dir="${src}" includes="**/test/Test*.java"/>
+      </batchtest>
+    </junit>
   </target>
 </project>
