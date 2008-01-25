@@ -425,18 +425,28 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
                 Location loc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()-1);
                 getDocument().delete(loc, 1);
                 left();
-                left();
-                if (getCurrentColumn() == 0)
-                  insertingAtLineStart = true;
-                else
+                // if we were at the end of the document,
+                // a single left() may have already put
+                // us into the correct position
+                if (!isPositionedForInsert()) {
                   left();
-                isInserting = true;
+                  if (getCurrentColumn() == 0)
+                    insertingAtLineStart = true;
+                  else
+                    left();
+                  isInserting = true;
+                }
               } else if (getCurrentRow() > 0) {
                 Location loc = localTextGridModel.gridToLocation(getCurrentRow()-1,getColumnCount()-1);
                 getDocument().delete(loc, 1);
                 left();
-                left();
-                left();
+                // if we were at the end of the document,
+                // a single left() may have already put
+                // us into the correct position
+                if (!isPositionedForInsert()) {
+                  left();
+                  left();
+                }
               }
             }
             break;
