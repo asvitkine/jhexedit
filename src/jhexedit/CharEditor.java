@@ -353,47 +353,44 @@ public class CharEditor extends TextGrid implements BinaryEditor {
             Location loc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn());
             getDocument().delete(loc, 1);
             break;
-
-          // User types a character
-          default:
-            char keyChar = e.getKeyChar();
-            
-            try {        
-              // There is a selection
-              if (selection != null && 
-                  selection.contains(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()))) {
-                  /*
-                char [] byteChars = new char[byteWidth];
-                byteChars[0] = keyChar;
-                for (int i=1; i<byteWidth; i++)
-                   byteChars[i] = Integer.toString(0, radix).charAt(0);
-                int byteValue = Integer.parseInt(new String(byteChars), radix);
-                if (byteValue >=0 && byteValue <= 0xFF) {
-                  moveTo(selection.getStartLocation());
-                  getDocument().delete(selection.getStartLocation(), (int) selection.length());
-                  getDocument().insert(selection.getStartLocation(), byteValue);
-                  right();
-                  right();
-                  clearMark();
-                  setSelectionSpan(null);
-                } */
-              }
-              // No selection - Insert
-              else if (keyChar != KeyEvent.CHAR_UNDEFINED && keyChar != KeyEvent.VK_ESCAPE && keyChar != KeyEvent.VK_ENTER) {
-                int byteValue = (byte) keyChar;
-                // ignore the ESCAPE key
-                if (byteValue >=0 && byteValue <= 0xFF) {
-                  getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
-                  right();
-                }
-                setSelectionSpan(null);
-              }
-            }
-            catch(NumberFormatException exception) {
-            }
-            e.consume();
-            break;
         }
+      } else if (e.getID() == KeyEvent.KEY_TYPED && (e.getModifiers() | KeyEvent.SHIFT_MASK) == KeyEvent.SHIFT_MASK) {
+        char keyChar = e.getKeyChar();
+        
+        try {        
+          // There is a selection
+          if (selection != null && 
+              selection.contains(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()))) {
+              /*
+            char [] byteChars = new char[byteWidth];
+            byteChars[0] = keyChar;
+            for (int i=1; i<byteWidth; i++)
+               byteChars[i] = Integer.toString(0, radix).charAt(0);
+            int byteValue = Integer.parseInt(new String(byteChars), radix);
+            if (byteValue >=0 && byteValue <= 0xFF) {
+              moveTo(selection.getStartLocation());
+              getDocument().delete(selection.getStartLocation(), (int) selection.length());
+              getDocument().insert(selection.getStartLocation(), byteValue);
+              right();
+              right();
+              clearMark();
+              setSelectionSpan(null);
+            } */
+          }
+          // No selection - Insert
+          else if (keyChar != KeyEvent.CHAR_UNDEFINED && keyChar != KeyEvent.VK_ESCAPE && keyChar != KeyEvent.VK_ENTER) {
+            int byteValue = (byte) keyChar;
+            // ignore the ESCAPE key
+            if (byteValue >=0 && byteValue <= 0xFF) {
+              getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
+              right();
+            }
+            setSelectionSpan(null);
+          }
+        }
+        catch(NumberFormatException exception) {
+        }
+        e.consume();
       }
     }
   }

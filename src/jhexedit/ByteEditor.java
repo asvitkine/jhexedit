@@ -406,7 +406,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
       super.processComponentKeyEvent(e);
       
       ByteSpan selection = getSelectionSpan();
-      
+
       if (e.getID() == KeyEvent.KEY_PRESSED) {
         switch(e.getKeyCode()) {
           case KeyEvent.VK_BACK_SPACE:
@@ -443,81 +443,79 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
 
           case KeyEvent.VK_DELETE:
             break;
-         
-          // User types a character
-          default:
-            char keyChar = e.getKeyChar();
-            
-            try {        
-              // There is a selection
-              if (selection != null && 
-                  selection.contains(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()))) {
-                char [] byteChars = new char[byteWidth];
-                byteChars[0] = keyChar;
-                for (int i=1; i<byteWidth; i++)
-                   byteChars[i] = Integer.toString(0, radix).charAt(0);
-                int byteValue = Integer.parseInt(new String(byteChars), radix);
-                if (byteValue >=0 && byteValue <= 0xFF) {
-                  moveTo(selection.getEndLocation().addOffset(-selection.length() + 1));
-                  getDocument().delete(selection.getStartLocation(), (int) selection.length());
-                  getDocument().insert(selection.getStartLocation(), byteValue);
-                  right();
-                  clearMark();
-                  setSelectionSpan(null);
-                }
-              }
-              // No selection -- Typeover
-              else if (!isPositionedForInsert()) {
-                int offset = getCurrentColumn() % (byteWidth+1);
-                int byteValue = 0;
-                char [] byteChars = getByteChars();
-                byteChars[offset] = keyChar;
-                byteValue = Integer.parseInt(new String(byteChars), radix);
-                if (byteValue >=0 && byteValue <= 0xFF) {
-                  getDocument().write(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
-                  if (isInserting) {
-                    right();
-                    isInserting = true;
-                    if (getCurrentColumn() == 0)
-                      insertingAtLineStart = true;
-                  }
-                  else {
-                    right();
-                    if (isPositionedForInsert()) {
-                      if (getCurrentColumn() == 0 && getCurrentRow() == getRowCount() - 1) {
-                        byte [] b = new byte[bytesPerRow];
-                        int bytesRead = document.read(document.createOffset(getCurrentRow()*bytesPerRow), b);
-                        if (bytesRead > 0)
-                          right();
-                      } else {
-                        right();
-                      }
-                    }
-                  }
-                }
-              }
-              // No selection - Insert
-              else {
-                char [] byteChars = new char[byteWidth];
-                byteChars[0] = keyChar;
-                for (int i=1; i<byteWidth; i++)
-                  byteChars[i] = Integer.toString(0, radix).charAt(0);
-                int byteValue = Integer.parseInt(new String(byteChars), radix);
-                if (byteValue >=0 && byteValue <= 0xFF) {
-                  int col = (insertingAtLineStart ? getCurrentColumn() : getCurrentColumn()+(byteWidth+1));
-                  getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),col),byteValue);
-                  if (!insertingAtLineStart)
-                    right();
-                  right();
-                  isInserting = true;
-                }
-              }
-            }
-            catch(NumberFormatException exception) {
-            }
-            e.consume();
-            break;
         }
+      } else if (e.getID() == KeyEvent.KEY_TYPED && (e.getModifiers() | KeyEvent.SHIFT_MASK) == KeyEvent.SHIFT_MASK) {
+        // User types a character
+        char keyChar = e.getKeyChar();
+          
+        try {        
+          // There is a selection
+          if (selection != null && 
+              selection.contains(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()))) {
+            char [] byteChars = new char[byteWidth];
+            byteChars[0] = keyChar;
+            for (int i=1; i<byteWidth; i++)
+               byteChars[i] = Integer.toString(0, radix).charAt(0);
+            int byteValue = Integer.parseInt(new String(byteChars), radix);
+            if (byteValue >=0 && byteValue <= 0xFF) {
+              moveTo(selection.getEndLocation().addOffset(-selection.length() + 1));
+              getDocument().delete(selection.getStartLocation(), (int) selection.length());
+              getDocument().insert(selection.getStartLocation(), byteValue);
+              right();
+              clearMark();
+              setSelectionSpan(null);
+            }
+          }
+          // No selection -- Typeover
+          else if (!isPositionedForInsert()) {
+            int offset = getCurrentColumn() % (byteWidth+1);
+            int byteValue = 0;
+            char [] byteChars = getByteChars();
+            byteChars[offset] = keyChar;
+            byteValue = Integer.parseInt(new String(byteChars), radix);
+            if (byteValue >=0 && byteValue <= 0xFF) {
+              getDocument().write(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
+              if (isInserting) {
+                right();
+                isInserting = true;
+                if (getCurrentColumn() == 0)
+                  insertingAtLineStart = true;
+              }
+              else {
+                right();
+                if (isPositionedForInsert()) {
+                  if (getCurrentColumn() == 0 && getCurrentRow() == getRowCount() - 1) {
+                    byte [] b = new byte[bytesPerRow];
+                    int bytesRead = document.read(document.createOffset(getCurrentRow()*bytesPerRow), b);
+                    if (bytesRead > 0)
+                      right();
+                  } else {
+                    right();
+                  }
+                }
+              }
+            }
+          }
+          // No selection - Insert
+          else {
+            char [] byteChars = new char[byteWidth];
+            byteChars[0] = keyChar;
+            for (int i=1; i<byteWidth; i++)
+              byteChars[i] = Integer.toString(0, radix).charAt(0);
+            int byteValue = Integer.parseInt(new String(byteChars), radix);
+            if (byteValue >=0 && byteValue <= 0xFF) {
+              int col = (insertingAtLineStart ? getCurrentColumn() : getCurrentColumn()+(byteWidth+1));
+              getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),col),byteValue);
+              if (!insertingAtLineStart)
+                right();
+              right();
+              isInserting = true;
+            }
+          }
+        }
+        catch(NumberFormatException exception) {
+        }
+        e.consume();
       }
     }
   }
