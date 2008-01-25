@@ -50,6 +50,8 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
         
   // CONSTANTS
   public static final int SPACER_WIDTH = 8;
+  
+  private static Color addressBackground = new Color(0.9f, 0.9f, 0.9f);
 
   // MEMBERS
   protected TextGrid   addressComponent;
@@ -91,9 +93,9 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     asciiEditor.setBackground(getBackground());
     
     spacer1.setBackground(getBackground());
-    spacer1.setPreferredSize(new Dimension(SPACER_WIDTH, 1));
-    spacer1.setMaximumSize(new Dimension(SPACER_WIDTH, 1));
-    spacer1.setMinimumSize(new Dimension(SPACER_WIDTH, 1));
+    spacer1.setPreferredSize(new Dimension(2, 1));
+    spacer1.setMaximumSize(new Dimension(2, 1));
+    spacer1.setMinimumSize(new Dimension(2, 1));
     spacer2.setBackground(getBackground());
     spacer2.setPreferredSize(new Dimension(SPACER_WIDTH, 1));
     spacer2.setMaximumSize(new Dimension(SPACER_WIDTH, 1));
@@ -231,7 +233,7 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     }
     
     public Color getCharBackground(int row, int col) {
-      return Color.WHITE;
+      return addressBackground;
     }
     
     public int getCharStyle(int row, int col) {
@@ -261,7 +263,7 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
       String result = Integer.toString(row * hexEditor.getBytesPerRow(),16);
       while (result.length() < maxAddress.length())
         result = Integer.toString(0,16) + result;
-      return result + " ";
+      return result + ":";
     }
   }
 
