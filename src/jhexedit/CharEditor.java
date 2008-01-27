@@ -245,6 +245,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
   // GRID CURSOR
   private class LocalTextGridCursor extends TextGridCursor {
     private Color insertColor = Color.BLACK;
+    private Color greySelectionColor = new Color(225, 225, 225);
 
     public void moveTo(int row, int column) {
       try {
@@ -305,7 +306,14 @@ public class CharEditor extends TextGrid implements BinaryEditor {
         moveTo(p.y,p.x+1);
       }
     }
-    
+
+    public Color getSelectionColor() {
+      if (CharEditor.this.hasFocus())
+        return (Color) UIManager.get("TextArea.selectionBackground");
+      else
+        return greySelectionColor;
+    }
+
     public boolean isSelected(int row, int column) {
       ByteSpan span = getSelectionSpan();
       if (span != null) {

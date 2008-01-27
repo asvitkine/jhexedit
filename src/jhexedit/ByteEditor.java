@@ -255,7 +255,8 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     private boolean insertingAtLineStart = false;
     private Color insertColor = Color.BLACK;
     private Color replaceColor = Color.BLACK;
-
+    private Color greySelectionColor = new Color(225, 225, 225);
+  
     public void left() {
       if (getCurrentColumn() == 0 && !insertingAtLineStart) {
         isInserting = true;
@@ -346,7 +347,14 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         moveTo(p.y,p.x+1);
       }
     }
-    
+
+    public Color getSelectionColor() {
+      if (ByteEditor.this.hasFocus())
+        return (Color) UIManager.get("TextArea.selectionBackground");
+      else
+        return greySelectionColor;
+    }
+
     public boolean isSelected(int row, int column) {
        ByteSpan span = getSelectionSpan();
        if (span != null) {
