@@ -271,7 +271,10 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         super.right();
         isInserting = insertingAtLineStart = true;
       } else if (insertingAtLineStart) {
-        isInserting = insertingAtLineStart = false;        
+        int b = document.read(document.createOffset(getCurrentRow()*bytesPerRow));
+        if (b != -1) {
+          isInserting = insertingAtLineStart = false;
+        }
       } else {
         super.right();
       }
