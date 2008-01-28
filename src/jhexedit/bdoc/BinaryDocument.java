@@ -343,10 +343,6 @@ public class BinaryDocument extends Observable {
 
     return len;    
   }
-  
-  public BinaryDocument read(Location loc, int len) {
-    return null;
-  }
 
   // WRITE OPERATIONS  
   public void write(Location loc, int b) {
@@ -378,10 +374,6 @@ public class BinaryDocument extends Observable {
     notifyObservers( new ContentChangedEvent( this, new ByteSpan( loc, loc.addOffset(len-1) ),
                                               ContentChangedEvent.WRITTEN ) );
     clearChanged();
-  }
-  
-  public void write(Location loc, BinaryDocument doc) {
-    modified = true;
   }
   
   // INSERT OPERATIONS
@@ -428,10 +420,6 @@ public class BinaryDocument extends Observable {
     notifyObservers( new ContentChangedEvent( this, new ByteSpan( loc, loc.addOffset(len-1) ),
                                               ContentChangedEvent.INSERTED ) );
     clearChanged();
-  }
-  
-  public void insert(Location loc, BinaryDocument doc) {
-    modified = true;
   }
 
   // DELETE
