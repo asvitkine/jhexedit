@@ -422,12 +422,20 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         switch(e.getKeyCode()) {
           case KeyEvent.VK_BACK_SPACE:
             if (selection != null && selection.length() > 0) {
-              moveTo(selection.getEndLocation().addOffset(-selection.length()));
+              boolean move = true;
+              Location newLoc = selection.getEndLocation().addOffset(-selection.length());
+              if (newLoc.getOffset() == -1) {
+                newLoc = newLoc.addOffset(1);
+                move = false;
+              }
+              moveTo(newLoc);
               getDocument().delete(selection.getStartLocation(), (int) selection.length());
               clearMark();
               setSelectionSpan(null);
-              right();
-              right();
+              if (move) {
+                right();
+                right();
+              }
               isInserting = true;
               if (getCurrentColumn() == 0)
                 insertingAtLineStart = true;
@@ -463,6 +471,28 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
             break;
 
           case KeyEvent.VK_DELETE:
+            if (selection != null && selection.length() > 0) {
+              boolean move = true;
+              Location newLoc = selection.getEndLocation().addOffset(-selection.length());
+              if (newLoc.getOffset() == -1) {
+                newLoc = newLoc.addOffset(1);
+                move = false;
+              }
+              moveTo(newLoc);
+              getDocument().delete(selection.getStartLocation(), (int) selection.length());
+              clearMark();
+              setSelectionSpan(null);
+              if (move) {
+                right();
+                right();
+              }
+              isInserting = true;
+              if (getCurrentColumn() == 0)
+                insertingAtLineStart = true;
+            } else if (isPositionedForInsert()) {
+                Location loc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()+1);
+                getDocument().delete(loc, 1);
+            }
             break;
         }
       } else if (e.getID() == KeyEvent.KEY_TYPED && (e.getModifiers() | KeyEvent.SHIFT_MASK) == KeyEvent.SHIFT_MASK) {
