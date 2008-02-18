@@ -360,6 +360,10 @@ public class BinaryDocument extends Observable {
     
     long offset = loc.getOffset();
     int bytesRemaining = (int) (length() - offset);
+    byte[] oldContent = new byte[bytesRemaining];
+
+    for (int i = 0; i < bytesRemaining; i++)
+      oldContent[i] = data[(int) (offset+i)];
     
     if (len > bytesRemaining) {
       if ((int) offset + len >= data.length)
@@ -372,7 +376,7 @@ public class BinaryDocument extends Observable {
 
     setChanged();
     notifyObservers( new ContentChangedEvent( this, new ByteSpan( loc, loc.addOffset(len-1) ),
-                                              ContentChangedEvent.WRITTEN ) );
+                                              ContentChangedEvent.WRITTEN, oldContent ) );
     clearChanged();
   }
   
@@ -418,7 +422,7 @@ public class BinaryDocument extends Observable {
 
     setChanged();
     notifyObservers( new ContentChangedEvent( this, new ByteSpan( loc, loc.addOffset(len-1) ),
-                                              ContentChangedEvent.INSERTED ) );
+                                              ContentChangedEvent.INSERTED, null ) );
     clearChanged();
   }
 
@@ -431,6 +435,12 @@ public class BinaryDocument extends Observable {
 
     if (len > bytesRemaining)
       len = bytesRemaining;
+
+    byte[] oldContent = new byte[len];
+
+    for (int i = 0; i < len; i++)
+      oldContent[i] = data[(int) (offset + i)];
+
     occupied -= len;
 
     for (int i=(int) offset; i<(int) length(); i++)
@@ -455,7 +465,7 @@ public class BinaryDocument extends Observable {
 
     setChanged();
     notifyObservers( new ContentChangedEvent( this, new ByteSpan( loc, loc.addOffset(len-1) ),
-                                              ContentChangedEvent.DELETED ) );
+                                              ContentChangedEvent.DELETED, oldContent ) );
     clearChanged();
     
     return len;

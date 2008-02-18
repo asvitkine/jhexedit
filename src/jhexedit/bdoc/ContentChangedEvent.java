@@ -51,12 +51,14 @@ public class ContentChangedEvent extends BinaryDocumentEvent {
   // PRIVATE MEMBERS
   private int type;
   private ByteSpan span;
+  private byte[] oldContent; // on WRITTEN and DELETED only
 
   // CONSTRUCTOR
-  public ContentChangedEvent( BinaryDocument bDoc, ByteSpan span, int type ) {
+  public ContentChangedEvent( BinaryDocument bDoc, ByteSpan span, int type, byte[] oldContent ) {
     super(bDoc);
     this.span = span;
     this.type = type;
+    this.oldContent = oldContent;
   }
 
   // GETTERS
@@ -66,5 +68,9 @@ public class ContentChangedEvent extends BinaryDocumentEvent {
 
   public ByteSpan getSpan() {
     return span;
+  }
+  
+  public byte[] getOldContent() {
+    return oldContent;
   }
 }
