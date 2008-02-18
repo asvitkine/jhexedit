@@ -93,13 +93,6 @@ public class Cursor extends Observable {
     return bytesRead;
   }
 
-  public BinaryDocument read(int len) {
-    BinaryDocument result = getDocument().read( pos, len );
-    if (result != null)
-      moveCursor( (int) result.length() );
-    return result;
-  }
-
   public void write( int b ) {
     getDocument().write( pos, b );
     moveCursor(1);
