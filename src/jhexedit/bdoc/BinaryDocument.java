@@ -360,16 +360,17 @@ public class BinaryDocument extends Observable {
     
     long offset = loc.getOffset();
     int bytesRemaining = (int) (length() - offset);
-    byte[] oldContent = new byte[bytesRemaining];
 
-    for (int i = 0; i < bytesRemaining; i++)
-      oldContent[i] = data[(int) (offset+i)];
-    
     if (len > bytesRemaining) {
       if ((int) offset + len >= data.length)
         expandBuffer(((int) offset + len) - data.length);
       occupied += len - bytesRemaining; 
     }
+
+    byte[] oldContent = new byte[len];
+
+    for (int i = 0; i < len; i++)
+      oldContent[i] = data[(int) (offset+i)];
     
     for (int i=0; i<len; i++)
       data[(int) offset + i] = b[off+i];
