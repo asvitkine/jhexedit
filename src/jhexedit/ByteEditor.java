@@ -299,6 +299,10 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     }
 
     public void moveTo(int row, int column) {
+      if (insertingAtLineStart && column == 0 && row == getCurrentRow()) {
+        return;
+      }
+
       boolean insertingAtLineStart = false;
       try {
         int charsPerRow = bytesPerRow*(byteWidth+1)-1;
