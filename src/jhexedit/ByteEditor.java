@@ -561,8 +561,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
             if (byteValue >=0 && byteValue <= 0xFF) {
               int col = (insertingAtLineStart ? getCurrentColumn() : getCurrentColumn()+(byteWidth+1));
               getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),col),byteValue);
-              if (!insertingAtLineStart)
-                right();
+              right();
               right();
               isInserting = true;
             }
