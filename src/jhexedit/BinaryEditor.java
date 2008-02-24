@@ -43,8 +43,8 @@ import jhexedit.bdoc.*;
 public interface BinaryEditor {
 
   // General getters and setters
-  public AnnotatedBinaryDocument getDocument();
-  public void setDocument(AnnotatedBinaryDocument document);
+  public BinaryDocument getDocument();
+  public void setDocument(BinaryDocument document);
 
   public Location getCurrentLocation();
   public void setCurrentLocation(Location loc);

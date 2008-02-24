@@ -52,7 +52,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
   public static final int DEFAULT_BYTES_PER_ROW = 16;
   
   // MEMBERS
-  protected AnnotatedBinaryDocument document;
+  protected BinaryDocument document;
   protected Location location;
   protected ByteSpan selection;
   protected LinkedList listeners;
@@ -66,7 +66,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
   /**
    * Construct the editor with a document.
    */
-  public CharEditor(AnnotatedBinaryDocument document) {
+  public CharEditor(BinaryDocument document) {
     super(new TestTextGridModel());
     listeners = new LinkedList();
     
@@ -89,11 +89,11 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     return bytesPerRow;
   }  
   
-  public AnnotatedBinaryDocument getDocument() {
+  public BinaryDocument getDocument() {
     return document;
   }
 
-  public void setDocument( AnnotatedBinaryDocument document ) {
+  public void setDocument(BinaryDocument document) {
     if (this.document != null)
       document.deleteObserver(localDocumentObserver);
     

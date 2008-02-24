@@ -50,14 +50,14 @@ public class BinaryEditorEvent extends EventObject {
   public static final int DOCUMENT_EVENT    = 3;
   
   // MEMBERS
-  private AnnotatedBinaryDocument document;
+  private BinaryDocument document;
   private Location location;
   private ByteSpan selection;
   private BinaryDocumentEvent docEvent;
   private int type;
   
   // CONSTRUCTOR
-  public BinaryEditorEvent(BinaryEditor source, AnnotatedBinaryDocument document,
+  public BinaryEditorEvent(BinaryEditor source, BinaryDocument document,
                            Location location, ByteSpan selection,
                            BinaryDocumentEvent docEvent, int type) {
     super(source);
@@ -69,7 +69,7 @@ public class BinaryEditorEvent extends EventObject {
   }
 
   // GETTERS
-  public AnnotatedBinaryDocument getDocument() { return document; }
+  public BinaryDocument getDocument() { return document; }
   public Location getCurrentLocation() { return location; }
   public ByteSpan getSelectionSpan() { return selection; }
   public BinaryDocumentEvent getDocumentEvent() { return docEvent; }

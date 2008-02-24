@@ -67,7 +67,7 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
   /**
    * Construct the editor with a document.
    */
-  public HexEditor(AnnotatedBinaryDocument document) {
+  public HexEditor(BinaryDocument document) {
     setBackground(Color.WHITE);
     setForeground(Color.BLACK);
 
@@ -135,11 +135,11 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     super.setEnabled(enabled);
   }
 
-  public AnnotatedBinaryDocument getDocument() {
+  public BinaryDocument getDocument() {
     return hexEditor.getDocument();
   }
 
-  public void setDocument(AnnotatedBinaryDocument document) {
+  public void setDocument(BinaryDocument document) {
     hexEditor.setDocument(document);
     asciiEditor.setDocument(document);
   }
@@ -169,7 +169,7 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
   }
 
   public String toString() {
-    AnnotatedBinaryDocument doc = getDocument();
+    BinaryDocument doc = getDocument();
     if (doc == null)
       return "No Document.";
     else if (doc.isNew()) 

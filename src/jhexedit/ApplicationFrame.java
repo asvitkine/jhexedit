@@ -166,7 +166,7 @@ public class ApplicationFrame extends JFrame {
   
   public BinaryEditor openDocument(File file) {
     try {
-      AnnotatedBinaryDocument doc = new AnnotatedBinaryDocument(file);
+      BinaryDocument doc = new AnnotatedBinaryDocument(file);
       HexEditor hexEditor = new HexEditor(doc);
       addEditor(hexEditor);
       return hexEditor;
@@ -192,7 +192,7 @@ public class ApplicationFrame extends JFrame {
   }
 
   public boolean closeEditor(BinaryEditor e) {
-    AnnotatedBinaryDocument doc = e.getDocument();
+    BinaryDocument doc = e.getDocument();
     
     // Confirm the close if the document was modified
     if (doc != null && doc.isModified()) {
