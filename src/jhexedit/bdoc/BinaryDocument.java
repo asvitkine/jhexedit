@@ -129,7 +129,26 @@ public class BinaryDocument extends Observable {
 
     anchor2Offset = new HashMap();
   }
-  
+
+  /**
+   * Construct an empty binary document with the specified capacity.
+   * Documents created in this way are not readOnly, but are considered
+   * new, (as defined by the isNew() method). New documents must be saved
+   * using the saveAs() method.
+   *
+   * @param capacity The initial allocated capacity for the document.
+   */
+  public BinaryDocument(int capacity) {
+    file     = null;
+    readOnly = false;  
+    modified = false;
+    
+    data = new byte[capacity];
+    occupied = 0;    
+
+    anchor2Offset = new HashMap();
+  }
+
   /**
    * Construct a binary document from a file.
    * The document is opened in read/write mode.
