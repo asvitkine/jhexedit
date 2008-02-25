@@ -101,30 +101,23 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     spacer2.setMaximumSize(new Dimension(SPACER_WIDTH, 1));
     spacer2.setMinimumSize(new Dimension(SPACER_WIDTH, 1));
 
-    gbc.gridx=0;
-    gbc.gridy=0;
+    gbc.gridx = GridBagConstraints.RELATIVE;
+    gbc.gridy = 0;
     gbc.gridwidth = 1;
-    gbc.gridheight = 1;
-    gbc.weightx = 0;
     gbc.weighty = 1.0;
     gbc.fill = GridBagConstraints.BOTH;
     gridbag.setConstraints(addressComponent,gbc);
     add(addressComponent);
 
-    gbc.gridx=1;
     gridbag.setConstraints(spacer1,gbc);
     add(spacer1);    
    
-    gbc.gridx=2;
     gridbag.setConstraints(hexEditor,gbc);
     add(hexEditor);
 
-    gbc.gridx=3;
     gridbag.setConstraints(spacer2,gbc);
     add(spacer2); 
     
-    gbc.gridx=4;
-    gbc.weightx = 1.0;
     gridbag.setConstraints(asciiEditor,gbc);
     add(asciiEditor);
   }
