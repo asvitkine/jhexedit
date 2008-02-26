@@ -49,7 +49,7 @@ import jhexedit.textgrid.*;
 public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
         
   // CONSTANTS
-  public static final int SPACER_WIDTH = 8;
+  public static final int SPACER_WIDTH = 2;
   
   private static Color addressBackground = new Color(0.9f, 0.9f, 0.9f);
 
@@ -60,20 +60,18 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
   
   private HexEditorListener hexEditorListener;
   private ASCIIEditorListener asciiEditorListener;
-  
-  protected JComponent spacer1;
-  protected JComponent spacer2;
-  
+
   /**
    * Construct the editor with a document.
    */
   public HexEditor(BinaryDocument document) {
-    setBackground(Color.WHITE);
+    Color bg = Color.WHITE;
+    setBackground(bg);
     setForeground(Color.BLACK);
 
     GridBagLayout gridbag = new GridBagLayout();
     GridBagConstraints gbc = new GridBagConstraints();
-    setLayout( gridbag );
+    setLayout(gridbag);
 
     hexEditor     = new ByteEditor(document);
     asciiEditor   = new CharEditor(document);
@@ -85,21 +83,23 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     hexEditor.addBinaryEditorListener(hexEditorListener);
     asciiEditor.addBinaryEditorListener(asciiEditorListener);
     
-    spacer1 = new JPanel();
-    spacer2 = new JPanel();
+    JPanel spacer1 = new JPanel();
+    JPanel spacer2 = new JPanel();
     
-    addressComponent.setBackground(getBackground());
-    hexEditor.setBackground(getBackground());
-    asciiEditor.setBackground(getBackground());
+    addressComponent.setBackground(bg);
+    hexEditor.setBackground(bg);
+    asciiEditor.setBackground(bg);
     
-    spacer1.setBackground(getBackground());
-    spacer1.setPreferredSize(new Dimension(2, 1));
-    spacer1.setMaximumSize(new Dimension(2, 1));
-    spacer1.setMinimumSize(new Dimension(2, 1));
-    spacer2.setBackground(getBackground());
-    spacer2.setPreferredSize(new Dimension(SPACER_WIDTH, 1));
-    spacer2.setMaximumSize(new Dimension(SPACER_WIDTH, 1));
-    spacer2.setMinimumSize(new Dimension(SPACER_WIDTH, 1));
+    Dimension dim = new Dimension(SPACER_WIDTH, 1);
+    spacer1.setBackground(bg);
+    spacer1.setPreferredSize(dim);
+    spacer1.setMaximumSize(dim);
+    spacer1.setMinimumSize(dim);
+    dim = new Dimension(2*SPACER_WIDTH, 1);
+    spacer2.setBackground(bg);
+    spacer2.setPreferredSize(dim);
+    spacer2.setMaximumSize(dim);
+    spacer2.setMinimumSize(dim);
 
     gbc.gridx = GridBagConstraints.RELATIVE;
     gbc.gridy = 0;
@@ -111,13 +111,14 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
 
     gridbag.setConstraints(spacer1,gbc);
     add(spacer1);    
-   
+
     gridbag.setConstraints(hexEditor,gbc);
     add(hexEditor);
 
     gridbag.setConstraints(spacer2,gbc);
     add(spacer2); 
-    
+
+    gbc.insets.right = SPACER_WIDTH;
     gridbag.setConstraints(asciiEditor,gbc);
     add(asciiEditor);
   }
