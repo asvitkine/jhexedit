@@ -424,6 +424,10 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
 
       if (e.getID() == KeyEvent.KEY_PRESSED) {
         switch(e.getKeyCode()) {
+          case KeyEvent.VK_END:
+            e.consume();
+            return;
+
           case KeyEvent.VK_BACK_SPACE:
             if (selection != null && selection.length() > 0) {
               boolean move = true;
