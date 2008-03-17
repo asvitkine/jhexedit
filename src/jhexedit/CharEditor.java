@@ -40,6 +40,7 @@ package jhexedit;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.util.*;
 
@@ -141,6 +142,37 @@ public class CharEditor extends TextGrid implements BinaryEditor {
 
   protected boolean shouldDrawCursor() {
     return super.shouldDrawCursor() && (selection == null || selection.length()==0);
+  }
+
+  public void copy() {
+    String selectedText = getSelectedText();
+    if (selectedText != null && selectedText.length() > 0) {
+      StringSelection ss = new StringSelection(selectedText);
+      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
+    }
+  }
+
+  public void cut() {
+    ByteSpan selection = getSelectionSpan();
+    if (selection != null && selection.length() > 0) {
+      copy();
+      localTextGridCursor.moveTo(selection.getEndLocation().addOffset(-selection.length()));
+      getDocument().delete(selection.getStartLocation(), (int) selection.length());
+      localTextGridCursor.clearMark();
+      setSelectionSpan(null);
+    }
+  }
+
+  public void paste() {
+    Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+    try {
+      if (t != null && t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+        String text = (String)t.getTransferData(DataFlavor.stringFlavor);
+        for (int i = 0; i < text.length(); i++) {
+          localTextGridCursor.typeKeyChar(text.charAt(i));
+        }
+      }
+    } catch (Exception e) { }
   }
 
   ////////////////////////////////
@@ -332,6 +364,27 @@ public class CharEditor extends TextGrid implements BinaryEditor {
       }
     }
 
+    public void typeKeyChar(char keyChar) {        
+      if (keyChar != KeyEvent.CHAR_UNDEFINED &&
+          keyChar != KeyEvent.VK_ESCAPE &&
+          keyChar != KeyEvent.VK_ENTER &&
+          keyChar != KeyEvent.VK_DELETE &&
+          keyChar != KeyEvent.VK_BACK_SPACE) {
+        int byteValue = (byte) keyChar;
+        if (byteValue >=0 && byteValue <= 0xFF) {
+          // There is a selection ... delete it first
+          if (selection != null && selection.length() > 0) {
+            moveTo(selection.getEndLocation().addOffset(-selection.length()));
+            getDocument().delete(selection.getStartLocation(), (int) selection.length());
+            clearMark();
+          }
+          getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
+          right();
+          setSelectionSpan(null);
+        }
+      }
+    }
+
     protected void processComponentKeyEvent(KeyEvent e) {
       super.processComponentKeyEvent(e);
       
@@ -373,26 +426,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
             break;
         }
       } else if (e.getID() == KeyEvent.KEY_TYPED && (e.getModifiers() | KeyEvent.SHIFT_MASK) == KeyEvent.SHIFT_MASK) {
-        char keyChar = e.getKeyChar();
-        
-        if (keyChar != KeyEvent.CHAR_UNDEFINED &&
-            keyChar != KeyEvent.VK_ESCAPE &&
-            keyChar != KeyEvent.VK_ENTER &&
-            keyChar != KeyEvent.VK_DELETE &&
-            keyChar != KeyEvent.VK_BACK_SPACE) {
-          int byteValue = (byte) keyChar;
-          if (byteValue >=0 && byteValue <= 0xFF) {
-            // There is a selection ... delete it first
-            if (selection != null && selection.length() > 0) {
-              moveTo(selection.getEndLocation().addOffset(-selection.length()));
-              getDocument().delete(selection.getStartLocation(), (int) selection.length());
-              clearMark();
-            }
-            getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
-            right();
-            setSelectionSpan(null);
-          }
-        }
+        typeKeyChar(e.getKeyChar());
         e.consume();
       }
     }

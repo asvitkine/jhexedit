@@ -123,6 +123,18 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     add(asciiEditor);
   }
 
+  public void focusHexView() {
+    hexEditor.requestFocus();
+  }
+
+  public void focusAsciiView() {
+    asciiEditor.requestFocus();
+  }
+
+  public void scrollToSelection() {
+    // TODO
+  }
+
   public void setEnabled(boolean enabled) {
     hexEditor.setEnabled(enabled);
     asciiEditor.setEnabled(enabled);
