@@ -156,10 +156,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     ByteSpan selection = getSelectionSpan();
     if (selection != null && selection.length() > 0) {
       copy();
-      localTextGridCursor.moveTo(selection.getEndLocation().addOffset(-selection.length()));
-      getDocument().delete(selection.getStartLocation(), (int) selection.length());
-      localTextGridCursor.clearMark();
-      setSelectionSpan(null);
+      localTextGridCursor.deleteSelection(selection);
     }
   }
 
@@ -364,7 +361,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
       }
     }
 
-    public void typeKeyChar(char keyChar) {        
+    public void typeKeyChar(char keyChar) {
       if (keyChar != KeyEvent.CHAR_UNDEFINED &&
           keyChar != KeyEvent.VK_ESCAPE &&
           keyChar != KeyEvent.VK_ENTER &&
@@ -385,6 +382,13 @@ public class CharEditor extends TextGrid implements BinaryEditor {
       }
     }
 
+    public void deleteSelection(ByteSpan selection) {
+      moveTo(selection.getEndLocation().addOffset(-selection.length()));
+      getDocument().delete(selection.getStartLocation(), (int) selection.length());
+      clearMark();
+      setSelectionSpan(null);
+    }
+
     protected void processComponentKeyEvent(KeyEvent e) {
       super.processComponentKeyEvent(e);
       
@@ -398,10 +402,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
 
           case KeyEvent.VK_BACK_SPACE:
             if (selection != null && selection.length() > 0) {
-              moveTo(selection.getEndLocation().addOffset(-selection.length()));
-              getDocument().delete(selection.getStartLocation(), (int) selection.length());
-              clearMark();
-              setSelectionSpan(null);
+              deleteSelection(selection);
             } else if (getCurrentColumn() > 0) {
               Location loc = localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()-1);
               getDocument().delete(loc, 1);
