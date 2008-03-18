@@ -79,7 +79,8 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
    * Construct the editor with a document.
    */
   public TextGrid(TextGridModel model) {
-    charHeight  = getFontMetrics(PLAIN_FONT).getHeight()-1;  // TODO: Fogure out why this works better. 
+    setFont(PLAIN_FONT);
+    charHeight  = getFontMetrics(PLAIN_FONT).getHeight()-1;  // TODO: Figure out why this works better. 
     charWidth   = getFontMetrics(PLAIN_FONT).charWidth('0'); // Assume fixed width!
     charDescent = getFontMetrics(PLAIN_FONT).getDescent();
 
@@ -153,7 +154,6 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
     return model.getColumnCount();
   }
 
-  
   // VIEW - MODEL STUFF
   
   /**
@@ -411,13 +411,22 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
     return hasFocus() && isEnabled();
   }
 
+  public int getSelectionStartVerticalOffset() {
+    int offset = 0;
+    if (cursor != null && cursor.isSelectionVisible()) {
+      Point p = cursor.getSelectionStart();
+      offset = charHeight * p.y;
+    }
+    return offset;
+  }
+
   public String getSelectedText() {
     String selectedText = null;
     if (cursor != null && cursor.isSelectionVisible()) {
       Point start = cursor.getSelectionStart();
       StringBuilder sb = new StringBuilder();
-      int j = start.y;
-      for (int i = start.x; i < getRowCount(); i++) {
+      int j = start.x;
+      for (int i = start.y; i < getRowCount(); i++) {
         for (; j < getColumnCount(); j++) {
           if (!cursor.isSelected(i, j))
             break;

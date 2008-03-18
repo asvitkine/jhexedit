@@ -131,8 +131,8 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     asciiEditor.requestFocus();
   }
 
-  public void scrollToSelection() {
-    // TODO
+  public int getSelectionStartVerticalOffset() {
+    return hexEditor.getSelectionStartVerticalOffset();
   }
 
   public void setEnabled(boolean enabled) {

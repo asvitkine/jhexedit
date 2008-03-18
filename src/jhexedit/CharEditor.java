@@ -348,7 +348,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
       ByteSpan span = getSelectionSpan();
       if (span != null && span.length() > 0) {
         Point p = localTextGridModel.locationToGrid(span.getStartLocation());
-        selectionStart = new Point(p.y, p.x);
+        selectionStart = new Point(p.x, p.y);
       }
       return selectionStart;
     }
