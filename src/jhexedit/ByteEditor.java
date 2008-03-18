@@ -391,16 +391,26 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         return greySelectionColor;
     }
 
+    public Point getSelectionStart() {
+      Point selectionStart = null;
+      ByteSpan span = getSelectionSpan();
+      if (span != null && span.length() > 0) {
+        Point p = localTextGridModel.locationToGrid(span.getStartLocation());
+        selectionStart = new Point(p.y, p.x + 1);
+      }
+      return selectionStart;
+    }
+
     public boolean isSelected(int row, int column) {
-       ByteSpan span = getSelectionSpan();
-       if (span != null) {
-         Point p = localTextGridModel.locationToGrid(span.getStartLocation());
-         if (p.x == column && p.y == row)
-           return false;
-         else       
-           return span.contains(localTextGridModel.gridToLocation(row,column));
-       }
-       return false;
+      ByteSpan span = getSelectionSpan();
+      if (span != null) {
+        Point p = localTextGridModel.locationToGrid(span.getStartLocation());
+        if (p.x == column && p.y == row)
+          return false;
+        else
+          return span.contains(localTextGridModel.gridToLocation(row,column));
+      }
+      return false;
     }
 
     public boolean isPositionedForInsert() {

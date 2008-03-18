@@ -414,13 +414,16 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
   public String getSelectedText() {
     String selectedText = null;
     if (cursor != null && cursor.isSelectionVisible()) {
+      Point start = cursor.getSelectionStart();
       StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < getRowCount(); i++) {
-        for (int j = 0; j < getColumnCount(); j++) {
-          if (cursor.isSelected(i, j)) {
-            sb.append(getCharAt(i, j));
-          }
+      int j = start.y;
+      for (int i = start.x; i < getRowCount(); i++) {
+        for (; j < getColumnCount(); j++) {
+          if (!cursor.isSelected(i, j))
+            break;
+          sb.append(getCharAt(i, j));
         }
+        j = 0;
       }
       selectedText = sb.toString();
     }

@@ -343,6 +343,16 @@ public class CharEditor extends TextGrid implements BinaryEditor {
         return greySelectionColor;
     }
 
+    public Point getSelectionStart() {
+      Point selectionStart = null;
+      ByteSpan span = getSelectionSpan();
+      if (span != null && span.length() > 0) {
+        Point p = localTextGridModel.locationToGrid(span.getStartLocation());
+        selectionStart = new Point(p.y, p.x);
+      }
+      return selectionStart;
+    }
+
     public boolean isSelected(int row, int column) {
       ByteSpan span = getSelectionSpan();
       if (span != null) {

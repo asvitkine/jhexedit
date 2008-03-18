@@ -269,6 +269,12 @@ public class TextGridCursor {
     return selectedTextColor;
   }
 
+  public Point getSelectionStart() {
+    if (!isMarkSet())
+      return null;
+    return new Point(getCurrentRow(), getCurrentColumn());
+  }
+
   public boolean isSelected(int row, int column) {
     if (!isMarkSet())
       return false;
