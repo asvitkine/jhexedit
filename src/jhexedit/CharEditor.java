@@ -365,9 +365,8 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     public void paint(Graphics g) {
       if (draw) {
         Rectangle rect = getCaretRect();
-        g.setXORMode(insertColor);
+        g.setColor(insertColor);
         g.drawLine(rect.x, rect.y, rect.x, rect.y + rect.height - 1);
-        g.setPaintMode();
       }
     }
 

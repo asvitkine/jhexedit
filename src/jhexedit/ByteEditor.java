@@ -434,16 +434,18 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
       if (draw) {
         Rectangle rect = getCaretRect();
         if (isPositionedForInsert()) {
-          g.setXORMode(insertColor);
+          g.setColor(insertColor);
           if (insertingAtLineStart)
             g.drawLine(rect.x, rect.y, rect.x, rect.y + rect.height - 1);
           else
             g.drawLine(rect.x + rect.width - 1, rect.y, rect.x + rect.width - 1, rect.y + rect.height - 1);
         } else {
-          g.setXORMode(replaceColor);
+          char c = getCharAt(getCurrentRow(), getCurrentColumn());
+          g.setColor(replaceColor);
           g.fillRect(rect.x, rect.y, rect.width, rect.height);
+          g.setColor(Color.WHITE);
+          g.drawChars(new char[] {c}, 0, 1, rect.x, 1 + rect.y + rect.height - charDescent);
         }
-        g.setPaintMode();
       }
     }
 

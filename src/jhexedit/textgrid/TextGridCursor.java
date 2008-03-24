@@ -300,10 +300,13 @@ public class TextGridCursor {
 
   public void paint(Graphics g) {
     if (draw) {
+      char c = textGrid.getCharAt(getCurrentRow(), getCurrentColumn());
+      int charDescent = textGrid.getFontMetrics(textGrid.getFont()).getDescent();
       Rectangle rect = getCaretRect();
-      g.setXORMode(Color.BLACK);
+      g.setColor(Color.BLACK);
       g.fillRect(rect.x, rect.y, rect.width, rect.height);
-      g.setPaintMode();
+      g.setColor(Color.WHITE);
+      g.drawChars(new char[] {c}, 0, 1, rect.x, 1 + rect.y + rect.height - charDescent);
     }
   }
 
