@@ -391,6 +391,14 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
         return greySelectionColor;
     }
 
+    public Color getSelectedTextColor() {
+      Color color = null;
+      if (ByteEditor.this.hasFocus()) {
+        color = (Color) UIManager.get("TextArea.selectionForeground");
+      }
+      return (color != null ? color : super.getSelectedTextColor());
+    }
+
     public Point getSelectionStart() {
       Point selectionStart = null;
       ByteSpan span = getSelectionSpan();
