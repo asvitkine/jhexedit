@@ -398,8 +398,10 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
         else if ( (lastStyle & UNDERLINE_LOW_DOUBLE) > 0 )
           as.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_TWO_PIXEL, lastStyleIdx, j);
       }
-        
-      g2d.drawString(as.getIterator(), leftMargin, baseLine);    
+
+      g2d.translate(leftMargin, baseLine);
+      g2d.drawString(as.getIterator(), 0, 0);    
+      g2d.translate(-leftMargin, -baseLine);
     }
     
     // Draw the caret
