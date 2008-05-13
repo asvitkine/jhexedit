@@ -90,6 +90,8 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     hexEditor.setBackground(bg);
     asciiEditor.setBackground(bg);
     
+    addressComponent.setFocusable(false);
+    
     Dimension dim = new Dimension(SPACER_WIDTH, 1);
     spacer1.setBackground(bg);
     spacer1.setPreferredSize(dim);
