@@ -469,16 +469,16 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     public void typeKeyChar(char keyChar) {
       try {        
         // There is a selection
-        if (selection != null && 
-            selection.contains(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()))) {
+        if (selection != null && selection.length() > 0) {
           char [] byteChars = new char[byteWidth];
           byteChars[0] = keyChar;
           for (int i=1; i<byteWidth; i++)
              byteChars[i] = Integer.toString(0, radix).charAt(0);
           int byteValue = Integer.parseInt(new String(byteChars), radix);
           if (byteValue >=0 && byteValue <= 0xFF) {
-            moveTo(selection.getEndLocation().addOffset(-selection.length() + 1));
-            getDocument().delete(selection.getStartLocation(), (int) selection.length());
+            int selectionLength = (int) selection.length();
+            moveTo(selection.getEndLocation().addOffset(-selectionLength + 1));
+            getDocument().delete(selection.getStartLocation(), selectionLength);
             getDocument().insert(selection.getStartLocation(), byteValue);
             right();
             clearMark();

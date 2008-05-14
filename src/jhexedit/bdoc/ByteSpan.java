@@ -171,4 +171,8 @@ public class ByteSpan {
 
     return result;
   }
+	
+  public String toString() {
+    return "ByteSpan[start=" + getStartLocation().getOffset() + ", end=" + getEndLocation().getOffset() + ", length=" + length() + "]";
+  }
 }

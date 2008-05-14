@@ -388,8 +388,9 @@ public class CharEditor extends TextGrid implements BinaryEditor {
         if (byteValue >=0 && byteValue <= 0xFF) {
           // There is a selection ... delete it first
           if (selection != null && selection.length() > 0) {
-            moveTo(selection.getEndLocation().addOffset(-selection.length()));
-            getDocument().delete(selection.getStartLocation(), (int) selection.length());
+            int selectionLength = (int) selection.length();
+            moveTo(selection.getEndLocation().addOffset(-selectionLength));
+            getDocument().delete(selection.getStartLocation(), selectionLength);
             clearMark();
           }
           getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),getCurrentColumn()),byteValue);
