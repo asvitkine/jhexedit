@@ -390,6 +390,16 @@ public class TextGridCursor {
           down();
           e.consume();
           break;
+        case KeyEvent.VK_A:
+          int modifiers = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+          if ((e.getModifiers() & modifiers) == modifiers) {
+            clearMark();
+            moveTo(0, 0);
+            setMark();
+            moveTo(textGrid.getRowCount()-1, textGrid.getColumnCount()-1);
+            e.consume();
+          }
+          break;
       }
     }
   } 
