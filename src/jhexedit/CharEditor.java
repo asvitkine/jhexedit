@@ -68,7 +68,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
    * Construct the editor with a document.
    */
   public CharEditor(BinaryDocument document) {
-    super(new TestTextGridModel());
+    super(null);
     listeners = new LinkedList();
     
     localTextGridModel = new LocalTextGridModel();

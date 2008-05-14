@@ -70,7 +70,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
    * Construct the editor with a document.
    */
   public ByteEditor(BinaryDocument document) {
-    super(new TestTextGridModel());
+    super(null);
     listeners = new LinkedList();
     
     localTextGridModel = new LocalTextGridModel();
