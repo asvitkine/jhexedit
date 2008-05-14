@@ -281,7 +281,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
   // GRID CURSOR
   private class LocalTextGridCursor extends TextGridCursor {
     private boolean isInserting = false;
-    private boolean insertingAtLineStart = false;
+    private boolean insertingAtLineStart = true;
     private Color insertColor = Color.BLACK;
     private Color replaceColor = Color.BLACK;
     private Color greySelectionColor = new Color(225, 225, 225);
@@ -524,7 +524,8 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
           int byteValue = Integer.parseInt(new String(byteChars), radix);
           if (byteValue >=0 && byteValue <= 0xFF) {
             int col = (insertingAtLineStart ? getCurrentColumn() : getCurrentColumn()+(byteWidth+1));
-            getDocument().insert(localTextGridModel.gridToLocation(getCurrentRow(),col),byteValue);
+            Location loc = localTextGridModel.gridToLocation(getCurrentRow(), col);
+            getDocument().insert(loc, byteValue);
             right();
             right();
             isInserting = true;

@@ -175,7 +175,7 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
    * Convert a row/column to a rectangle on the screen. 
    */
   public Rectangle modelToView(int row, int col) {
-    return new Rectangle(col * charWidth +leftMargin, row * charHeight + topMargin, charWidth, charHeight);
+    return new Rectangle(col * charWidth + leftMargin, row * charHeight + topMargin, charWidth, charHeight);
   }
   
   /**
