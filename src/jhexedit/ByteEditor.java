@@ -95,6 +95,20 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     return bytesPerRow;
   }  
   
+  public Dimension getPreferredSize() {
+    int charsPerRow = bytesPerRow*(byteWidth+1)-1;
+    Dimension dim = super.getPreferredSize();
+    dim.width = leftMargin + charsPerRow*charWidth;
+    return dim;
+  }
+
+  public Dimension getMinimumSize() {
+    int charsPerRow = bytesPerRow*(byteWidth+1)-1;
+    Dimension dim = super.getMinimumSize();
+    dim.width = leftMargin + charsPerRow*charWidth;
+    return dim;
+  }
+
   public BinaryDocument getDocument() {
     return document;
   }

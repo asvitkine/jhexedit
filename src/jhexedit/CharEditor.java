@@ -89,7 +89,19 @@ public class CharEditor extends TextGrid implements BinaryEditor {
   public int getBytesPerRow() {
     return bytesPerRow;
   }  
-  
+
+  public Dimension getPreferredSize() {
+    Dimension dim = super.getPreferredSize();
+    dim.width = leftMargin + bytesPerRow*charWidth;
+    return dim;
+  }
+
+  public Dimension getMinimumSize() {
+    Dimension dim = super.getMinimumSize();
+    dim.width = leftMargin + bytesPerRow*charWidth;
+    return dim;
+  }
+
   public BinaryDocument getDocument() {
     return document;
   }

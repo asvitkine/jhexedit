@@ -108,14 +108,6 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
 
     if (model != null)
       model.addTextGridModelListener(this);
-    
-    /*
-    Dimension d = new Dimension( leftMargin + model.getColumnCount()*charWidth,
-                                 topMargin + model.getRowCount()*charHeight);
-
-    setPreferredSize(d);
-    setMinimumSize(d);
-    */
 
     revalidate();
     repaint();
@@ -126,7 +118,11 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
     return new Dimension(leftMargin + model.getColumnCount()*charWidth,
                          topMargin + model.getRowCount()*charHeight);
   }
-  
+
+  public Dimension getMinimumSize() {
+    return getPreferredSize();
+  }
+
   // CURSOR STUFF
 
   public TextGridCursor getTextGridCursor(TextGridCursor cursor) {
@@ -208,10 +204,6 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
 
   // TEXT GRID MODEL LISTENER INTERFACE
   public void textGridUpdated(TextGridModelEvent e) {
-    Dimension d = new Dimension( leftMargin + model.getColumnCount()*charWidth,
-                                 topMargin + model.getRowCount()*charHeight);
-    setPreferredSize(d);
-
     revalidate();
     repaint();
   }
