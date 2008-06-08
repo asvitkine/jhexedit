@@ -120,8 +120,7 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
   }
 
   public Dimension getMinimumSize() {
-    return new Dimension(leftMargin + model.getColumnCount()*charWidth,
-                         topMargin + 6*charHeight);
+    return getPreferredSize();
   }
 
   // CURSOR STUFF
