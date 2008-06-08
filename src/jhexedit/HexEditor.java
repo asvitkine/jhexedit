@@ -125,6 +125,10 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     add(asciiEditor);
   }
 
+  public Font getFont() {
+    return (hexEditor == null ? super.getFont() : hexEditor.getFont());
+  }
+
   public void focusHexView() {
     hexEditor.requestFocus();
   }
