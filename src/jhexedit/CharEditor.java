@@ -198,7 +198,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     }
     
     public int getColumnCount() {
-      return getRowText(0).length();
+      return bytesPerRow;
     }
     
     public int getRowCount() {
@@ -244,29 +244,28 @@ public class CharEditor extends TextGrid implements BinaryEditor {
     }
 
     public String getRowText(int row) {
-      String result = "";
+      StringBuilder result = new StringBuilder();
       int bytesRead = 0;
       byte [] b = new byte[bytesPerRow];
-      int i;
-      
+
       try {
         bytesRead = document.read(document.createOffset(row*bytesPerRow), b);
-      }
-      catch(Exception ignore) {}
-      
-      for (i=0; i<bytesRead; i++) {
+      } catch (Exception ignore) {}
+
+      for (int i = 0; i < bytesRead; i++) {
         if (b[i] >= 32 && b[i] <= 126) {
-          result += (char) b[i];
+          result.append((char) b[i]);
         } else {
-          result += '.';
+          result.append('.');
         }
       }
 
-      for (; i<bytesPerRow; i++) {
-        result = result + " "; 
+      int desiredLength = getColumnCount();
+      while (result.length() < desiredLength) {
+        result.append(' ');
       }
-      
-      return result;
+
+      return result.toString();
     }
 
     public Location gridToLocation(int row, int col) {

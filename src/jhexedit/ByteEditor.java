@@ -205,7 +205,7 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     }
     
     public int getColumnCount() {
-      return getRowText(0).length();
+      return bytesPerRow*(byteWidth+1)-1;
     }
     
     public int getRowCount() {
@@ -251,31 +251,32 @@ public class ByteEditor extends TextGrid implements BinaryEditor {
     }
 
     public String getRowText(int row) {
-      String result = "";
+      StringBuilder result = new StringBuilder();
       int bytesRead = 0;
-      byte [] b = new byte[bytesPerRow];
-      int i;
-      
+      byte[] b = new byte[bytesPerRow];
+
       try {
         bytesRead = document.read(document.createOffset(row*bytesPerRow), b);
-      }
-      catch(Exception ignore) {}
-      
-      for (i=0; i<bytesRead; i++) {
+      } catch (Exception ignore) {}
+
+      for (int i = 0; i < bytesRead; i++) {
+        if (i > 0) result.append(' ');
         String tmp = Integer.toString(0xFF & b[i], radix);
-        while(tmp.length()<byteWidth)
-          tmp = Integer.toString(0, radix) + tmp;
-        result = result + (result == "" ? "" : " ") + tmp;
+        int len = tmp.length();
+        while (len < byteWidth) {
+          String pad = Integer.toString(0, radix);
+          len += pad.length();
+          result.append(pad);
+        }
+        result.append(tmp);
       }
 
-      for (; i<bytesPerRow; i++) {
-        String tmp = " ";
-        while(tmp.length()<byteWidth)
-          tmp = tmp + " ";
-        result = result + " " + tmp; 
+      int desiredLength = getColumnCount();
+      while (result.length() < desiredLength) {
+        result.append(' ');
       }
-      
-      return result;
+
+      return result.toString();
     }
 
     public Location gridToLocation(int row, int col) {

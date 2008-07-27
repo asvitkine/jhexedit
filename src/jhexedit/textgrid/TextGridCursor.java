@@ -42,6 +42,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Iterator;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class TextGridCursor {
@@ -71,7 +72,9 @@ public class TextGridCursor {
   private LocalKeyListener kl;
   
   private LinkedList listeners;
-  
+
+  private Runnable guiUpdater;
+
   public TextGridCursor() {
     uninstall();
 
@@ -177,20 +180,32 @@ public class TextGridCursor {
     this.row = row;
     this.column = column; 
 
-    // Scroll if necessary
-    textGrid.scrollRectToVisible(getCaretRect());
+    synchronized(this) {
+      if (guiUpdater == null) {
+        guiUpdater = new Runnable() {
+          public void run() {
+            synchronized(TextGridCursor.this) {
+              // Scroll if necessary
+              textGrid.scrollRectToVisible(getCaretRect());
 
-    // Draw the new caret
-    if (!isMarkSet()) {
-      draw = true;
-      textGrid.repaint(getCaretRect());
+              // Draw the new caret
+              if (!isMarkSet()) {
+                draw = true;
+                textGrid.repaint(getCaretRect());
+              } else {
+                textGrid.repaint();
+              }
+
+              // Continue flashing
+              drawTimer.restart();
+
+              guiUpdater = null;
+            }
+          }
+        };
+        SwingUtilities.invokeLater(guiUpdater);
+      }
     }
-    else {
-      textGrid.repaint();
-    }
-      
-    // Continue flashing
-    drawTimer.restart();
 
     // Notify listeners
     fireTextGridCursorEvent(new TextGridCursorEvent(this, getCurrentRow(), getCurrentColumn(), markedRow, markedColumn, 
