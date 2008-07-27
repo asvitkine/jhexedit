@@ -60,4 +60,8 @@ public class Offset extends Location {
   public int compareTo(Object o) {
     return (int) (offset - ((Location) o).getOffset());
   }
+
+  public String toString() {
+    return super.toString() + "[offset=" + offset + "]";
+  }
 }

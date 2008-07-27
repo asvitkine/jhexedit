@@ -330,7 +330,7 @@ public class CharEditor extends TextGrid implements BinaryEditor {
           end = mLoc;
         }
         byte [] b = new byte[1];
-        while (document.read(end, b) < 0)
+        while (end.getOffset() > 0 && document.read(end, b) < 0)
           end = end.addOffset(-1);
         span = new ByteSpan(start, end);
       }
