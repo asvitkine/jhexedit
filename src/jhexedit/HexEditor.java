@@ -169,7 +169,7 @@ public class HexEditor extends JPanel implements BinaryEditor, Scrollable {
     return hexEditor.getSelectionSpan();
   }
 
-  public void setSelectionSpan( ByteSpan selection ) {
+  public void setSelectionSpan(ByteSpan selection) {
     hexEditor.setSelectionSpan(selection);
     asciiEditor.setSelectionSpan(selection);
   }
