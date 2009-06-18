@@ -80,10 +80,6 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
    */
   public TextGrid(TextGridModel model) {
     setFont(PLAIN_FONT);
-    charHeight  = getFontMetrics(PLAIN_FONT).getHeight()-1;  // TODO: Figure out why this works better. 
-    charWidth   = getFontMetrics(PLAIN_FONT).charWidth('0'); // Assume fixed width!
-    charDescent = getFontMetrics(PLAIN_FONT).getDescent();
-
     setModel(model);
 
     topMargin  = 2;
@@ -93,7 +89,14 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
     setFocusable(true);
     setAutoscrolls(true);
   }
-  
+
+  public void setFont(Font font) {
+    super.setFont(font);
+    charHeight  = getFontMetrics(font).getHeight()-1;  // TODO: Figure out why this works better. 
+    charWidth   = getFontMetrics(font).charWidth('0'); // Assume fixed width!
+    charDescent = getFontMetrics(font).getDescent();
+  }
+
   // MODEL STUFF
    
   public TextGridModel getModel() {
@@ -306,7 +309,7 @@ public class TextGrid extends JComponent implements TextGridModelListener, Scrol
       int baseLine = rect.y + rect.height - charDescent;
       
       AttributedString as = new AttributedString(getRowText(i));
-      as.addAttribute(TextAttribute.FONT, PLAIN_FONT);
+      as.addAttribute(TextAttribute.FONT, getFont());
       
       for (j=minRowCol.x; j<=maxRowCol.x; j++) {
         if (cursor != null && cursor.isSelectionVisible() && cursor.isSelected(i,j)) {
