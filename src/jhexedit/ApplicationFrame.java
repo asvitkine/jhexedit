@@ -187,6 +187,16 @@ public class ApplicationFrame extends JFrame {
     addEditor(e);
     return e;
   }
+	
+  public void closeDocument() {
+    Component component = documentTabs.getSelectedComponent();
+    if (component instanceof JScrollPane) {
+      Object view = ((JScrollPane) component).getViewport().getView();
+      if (view instanceof BinaryEditor) {
+        closeEditor((BinaryEditor) view);
+      }
+    }
+  }
 
   public void addEditor(BinaryEditor e) {
     editors.add(e);

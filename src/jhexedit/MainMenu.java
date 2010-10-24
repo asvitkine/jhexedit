@@ -54,6 +54,7 @@ public class MainMenu extends JMenuBar {
 
   private JMenuItem newMenuItem;
   private JMenuItem openMenuItem;
+  private JMenuItem closeMenuItem;
   private JMenuItem saveMenuItem;
   private JMenuItem saveAsMenuItem;
   private JMenuItem exitMenuItem;
@@ -79,7 +80,11 @@ public class MainMenu extends JMenuBar {
     openMenuItem = new JMenuItem(new OpenAction());
     openMenuItem.setMnemonic(KeyEvent.VK_O);
     openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, shortcutKeyMask)); 
-    
+
+    closeMenuItem = new JMenuItem(new CloseAction());
+    closeMenuItem.setMnemonic(KeyEvent.VK_W);
+    closeMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, shortcutKeyMask)); 
+
     saveMenuItem = new JMenuItem("Save");
     saveMenuItem.setMnemonic(KeyEvent.VK_S);
     saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, shortcutKeyMask)); 
@@ -92,11 +97,17 @@ public class MainMenu extends JMenuBar {
     
     fileMenu.add( newMenuItem );
     fileMenu.add( openMenuItem );
+    fileMenu.addSeparator();
+    fileMenu.add( closeMenuItem );
     fileMenu.add( saveMenuItem );
     fileMenu.add( saveAsMenuItem );
-    fileMenu.addSeparator();
-    fileMenu.add( exitMenuItem );
-    
+
+    boolean isMacOSX = System.getProperty("os.name").toLowerCase().contains("mac os x");
+    if (!isMacOSX) {
+        fileMenu.addSeparator();
+        fileMenu.add( exitMenuItem );
+    }
+
     editMenu = new JMenu("Edit");
     editMenu.setMnemonic(KeyEvent.VK_E);
 
@@ -138,6 +149,15 @@ public class MainMenu extends JMenuBar {
     }
     public void actionPerformed(ActionEvent e) {
       ApplicationFrame.instance().openDocument();
+    }
+  }
+
+  private class CloseAction extends AbstractAction {
+    public CloseAction() {
+      super("Close");
+    }
+    public void actionPerformed(ActionEvent e) {
+      ApplicationFrame.instance().closeDocument();
     }
   }
 
