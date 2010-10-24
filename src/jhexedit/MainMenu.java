@@ -41,6 +41,7 @@
  */
 package jhexedit;
 import  javax.swing.*;
+import  java.awt.Toolkit;
 import  java.awt.event.*;
 
 public class MainMenu extends JMenuBar {
@@ -65,7 +66,7 @@ public class MainMenu extends JMenuBar {
    * default listeners.
    */
   public MainMenu() {
-    super();
+    int shortcutKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
     // File Menu
     fileMenu = new JMenu("File");
@@ -73,21 +74,21 @@ public class MainMenu extends JMenuBar {
 
     newMenuItem = new JMenuItem(new NewAction());
     newMenuItem.setMnemonic(KeyEvent.VK_N);
-    newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK)); 
+    newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, shortcutKeyMask)); 
     
     openMenuItem = new JMenuItem(new OpenAction());
     openMenuItem.setMnemonic(KeyEvent.VK_O);
-    openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK)); 
+    openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, shortcutKeyMask)); 
     
     saveMenuItem = new JMenuItem("Save");
     saveMenuItem.setMnemonic(KeyEvent.VK_S);
-    saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK)); 
+    saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, shortcutKeyMask)); 
     
     saveAsMenuItem = new JMenuItem("Save As");
     
     exitMenuItem = new JMenuItem(new ExitAction());
     exitMenuItem.setMnemonic(KeyEvent.VK_X);
-    exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK)); 
+    exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, shortcutKeyMask)); 
     
     fileMenu.add( newMenuItem );
     fileMenu.add( openMenuItem );
