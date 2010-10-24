@@ -112,10 +112,10 @@ public class ApplicationFrame extends JFrame {
     mainPanel.setLayout(new AKDockLayout());
 
     fileToolBar = new FileToolBar();
-    mainPanel.add(fileToolBar, AKDockLayout.NORTH);
+    //mainPanel.add(fileToolBar, AKDockLayout.NORTH);
 
     binToolBar = new BinaryOperationsToolBar();
-    mainPanel.add(binToolBar, AKDockLayout.NORTH);
+    //mainPanel.add(binToolBar, AKDockLayout.NORTH);
 
     documentTabs = new JTabbedPane();
     mainPanel.add(documentTabs, AKDockLayout.CENTER);
@@ -142,7 +142,7 @@ public class ApplicationFrame extends JFrame {
     c.weighty = 0;
     c.fill = GridBagConstraints.HORIZONTAL;
     gridbag.setConstraints(statusPanel,c);
-    getContentPane().add(statusPanel);
+    //getContentPane().add(statusPanel);
 
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(new LocalWindowListener());
