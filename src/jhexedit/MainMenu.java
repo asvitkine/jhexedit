@@ -36,17 +36,20 @@
  *                                                                        *
  ************************************************************************ */
 
-/**
- * TODO
- */
 package jhexedit;
-import  javax.swing.*;
-import  java.awt.Toolkit;
-import  java.awt.event.*;
+
+import javax.swing.*;
+import javax.swing.text.DefaultEditorKit;
+import java.awt.*;
+import java.awt.event.*;
+import java.lang.reflect.Method;
 
 public class MainMenu extends JMenuBar {
 
+  private static boolean isMacOSX = System.getProperty("os.name").toLowerCase().contains("mac os x");
+
   // PRIVATE MEMBER VARIABLES
+
   private JMenu fileMenu;
   private JMenu editMenu;
   private JMenu viewMenu;
@@ -73,18 +76,9 @@ public class MainMenu extends JMenuBar {
     fileMenu = new JMenu("File");
     fileMenu.setMnemonic(KeyEvent.VK_F);
 
-    newMenuItem = new JMenuItem(new NewAction());
-    newMenuItem.setMnemonic(KeyEvent.VK_N);
-    newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, shortcutKeyMask)); 
-    
+    newMenuItem = new JMenuItem(new NewAction());    
     openMenuItem = new JMenuItem(new OpenAction());
-    openMenuItem.setMnemonic(KeyEvent.VK_O);
-    openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, shortcutKeyMask)); 
-
     closeMenuItem = new JMenuItem(new CloseAction());
-    closeMenuItem.setMnemonic(KeyEvent.VK_W);
-    closeMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, shortcutKeyMask)); 
-
     saveMenuItem = new JMenuItem("Save");
     saveMenuItem.setMnemonic(KeyEvent.VK_S);
     saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, shortcutKeyMask)); 
@@ -102,14 +96,16 @@ public class MainMenu extends JMenuBar {
     fileMenu.add( saveMenuItem );
     fileMenu.add( saveAsMenuItem );
 
-    boolean isMacOSX = System.getProperty("os.name").toLowerCase().contains("mac os x");
     if (!isMacOSX) {
-        fileMenu.addSeparator();
-        fileMenu.add( exitMenuItem );
+      fileMenu.addSeparator();
+      fileMenu.add( exitMenuItem );
     }
 
     editMenu = new JMenu("Edit");
     editMenu.setMnemonic(KeyEvent.VK_E);
+    editMenu.add(new JMenuItem(new CutAction()));
+    editMenu.add(new JMenuItem(new CopyAction()));
+    editMenu.add(new JMenuItem(new PasteAction()));
 
     viewMenu = new JMenu("View");
     viewMenu.setMnemonic(KeyEvent.VK_V);
@@ -137,6 +133,9 @@ public class MainMenu extends JMenuBar {
   private class NewAction extends AbstractAction {
     public NewAction() {
       super("New");
+      if (!isMacOSX)
+        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
+      putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
     public void actionPerformed(ActionEvent e) {
       ApplicationFrame.instance().newDocument();
@@ -146,6 +145,9 @@ public class MainMenu extends JMenuBar {
   private class OpenAction extends AbstractAction {
     public OpenAction() {
       super("Open");
+      if (!isMacOSX)
+        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
+      putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
     public void actionPerformed(ActionEvent e) {
       ApplicationFrame.instance().openDocument();
@@ -155,6 +157,9 @@ public class MainMenu extends JMenuBar {
   private class CloseAction extends AbstractAction {
     public CloseAction() {
       super("Close");
+      if (!isMacOSX)
+        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_W));
+      putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
     public void actionPerformed(ActionEvent e) {
       ApplicationFrame.instance().closeDocument();
@@ -167,6 +172,60 @@ public class MainMenu extends JMenuBar {
     }
     public void actionPerformed(ActionEvent e) {
       ApplicationFrame.instance().quit();
+    }
+  }
+
+  private class CutAction extends DefaultEditorKit.CutAction {
+    public CutAction() {
+      putValue(NAME, "Cut");
+      if (!isMacOSX)
+        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
+      putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    }
+
+    public void actionPerformed(ActionEvent event) {
+      Component c = ApplicationFrame.instance().getFocusOwner();
+      if (c != null) {
+        try {
+	  c.getClass().getMethod("cut").invoke(c);
+        } catch (Exception e) { }
+      }
+    }
+  }
+
+  private class CopyAction extends DefaultEditorKit.CopyAction {
+    public CopyAction() {
+      putValue(NAME, "Copy");
+      if (!isMacOSX)
+        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+      putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    }
+
+    public void actionPerformed(ActionEvent event) {
+      Component c = ApplicationFrame.instance().getFocusOwner();
+      if (c != null) {
+        try {
+	  c.getClass().getMethod("copy").invoke(c);
+        } catch (Exception e) { }
+      }
+    }
+  }
+
+  private class PasteAction extends DefaultEditorKit.PasteAction {
+    public PasteAction() {
+      putValue(NAME, "Paste");
+      if (!isMacOSX)
+        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
+      putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    }
+
+    public void actionPerformed(ActionEvent event) {
+      Component c = ApplicationFrame.instance().getFocusOwner();
+      if (c != null) {
+        try {
+	  c.getClass().getMethod("paste").invoke(c);
+        } catch (Exception e) { }
+      }
     }
   }
 
