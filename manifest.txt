@@ -1,2 +1,2 @@
-Main-Class: jhexedit.ApplicationFrame
+Main-Class: jhexedit.JHexEdit
 Class-Path: jhexedit.jar

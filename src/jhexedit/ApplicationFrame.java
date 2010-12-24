@@ -66,24 +66,6 @@ public class ApplicationFrame extends JFrame {
   /////////////////////////////////////////////////////
   // STATIC METHODS
 
-  public static void main( String [] argv ) {
-    System.setProperty("apple.laf.useScreenMenuBar", "true");
-
-    ApplicationFrame frame = ApplicationFrame.instance();
-
-    // Open all documents specified in the command line
-    if (argv.length == 0) {
-      frame.newDocument();
-    }
-    else {
-      for(int i=0; i<argv.length; i++)
-        frame.openDocument(new File(argv[i]));
-    }
-
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
-  }  
-
   public static ApplicationFrame instance() {
     if (_instance == null) 
       _instance = new ApplicationFrame();
