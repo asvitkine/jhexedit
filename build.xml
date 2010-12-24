@@ -44,7 +44,8 @@
     <!-- Create the documentation directory -->
     <mkdir dir="${doc}"/>
     <!-- Compile the documentation -->
-    <javadoc destdir="${doc}" author="true" version="true" use="true" windowtitle="JHexEdit">
+    <javadoc destdir="${doc}" author="true" version="true" use="true"
+        windowtitle="JHexEdit" additionalparam="-notimestamp">
       <fileset dir="${src}" includes="**" excludes="**/test/Test*.java"/>
       <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
     </javadoc>
